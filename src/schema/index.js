@@ -1,7 +1,5 @@
 const { Validator } = require('jsonschema');
 
-const name = '/Schema';
-const schema = { $ref: name };
 
 function resolve(validator) {
     const { unresolvedRefs } = validator;
@@ -13,19 +11,19 @@ function resolve(validator) {
 }
 
 
-function init() {
+function init(schema, name) {
     const validator = new Validator();
     validator.addSchema(schema, name);
     resolve(validator);
-    return validator;
+
+    return function validate(obj) {
+        return validator.validate(obj, schema);
+    };
 }
 
-
-function validate(obj) {
-    const validator = init();
-    return validator.validate(obj, schema);
-}
-
+const name = '/Schema';
+const schema = { $ref: name };
+const validate = init(schema, name);
 
 module.exports = {
     validate,

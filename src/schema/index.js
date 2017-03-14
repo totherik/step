@@ -2,14 +2,14 @@ const { Validator } = require('jsonschema');
 
 
 function resolve(validator) {
-    const { unresolvedRefs } = validator;
-    const unresolved = unresolvedRefs.shift();
-    if (unresolved) {
-        validator.addSchema(require(`.${unresolved}`), unresolved);
+    const { unresolvedRefs: refs } = validator;
+    const name = refs.shift();
+    if (name) {
+        const schema = require(`.${name}`);
+        validator.addSchema(schema, name);
         resolve(validator);
     }
 }
-
 
 function init(schema, name) {
     const validator = new Validator();
@@ -20,6 +20,7 @@ function init(schema, name) {
         return validator.validate(obj, schema);
     };
 }
+
 
 const name = '/Schema';
 const schema = { $ref: name };

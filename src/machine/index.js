@@ -1,5 +1,5 @@
 const { validate } = require('../schema');
-const StateTypes = require('./states');
+const State = require('./states');
 
 
 class Machine {
@@ -26,13 +26,10 @@ class Machine {
         let machine = Promise.resolve(input);
 
         while (task) {
-            const state = StateTypes.get(name, task);
+            const state = State.create(name, task);
             machine = state.run(machine);
 
-            // const handler = StateTypes.get(name, task);
-            // machine = machine.then(handler);
-
-            const { Type, End } = task;
+            const { End, Type } = task;
             if (End || Type === 'Succeed' || Type === 'Fail') {
                 break;
             }

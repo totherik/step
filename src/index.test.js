@@ -8,6 +8,9 @@ test('Pass', t => {
         States: {
             PassTest: {
                 Type: 'Pass',
+                InputPath: '$.foo',
+                ResultPath: '$.bar',
+                OutputPath: '$.bar.pass',
                 Result: {
                     pass: {
                         a: 'b',
@@ -19,12 +22,14 @@ test('Pass', t => {
     };
 
     const input = {
-        foo: 'bar',
+        foo: {
+            bar: 'bar',
+        },
     };
 
     const machine = new Machine(states);
     return machine.run(input).then(result => {
-        t.deepEqual(result, { pass: { a: 'b' } });
+        t.deepEqual(result, { a: 'b' });
     });
 
 });

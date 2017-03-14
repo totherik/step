@@ -1,8 +1,8 @@
 const test = require('ava');
-const { validate } = require('./schema');
+const { validate } = require('../');
 
 
-test('Amazon States Lang', t => {
+test('Pass Type', t => {
 
     const pass = {
         "StartAt": "PassTest",

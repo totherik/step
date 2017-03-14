@@ -1,1 +1,5 @@
 # step
+
+```bash
+$ npm test
+```

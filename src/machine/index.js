@@ -6,16 +6,17 @@ class Machine {
 
     constructor(spec) {
         this.spec = spec;
-        this.validation = validate(spec);
     }
 
     run(input) {
-        const { errors } = this.validation;
+        const { spec } = this;
+        const { errors } = validate(spec);
+        
         if (errors.length) {
             return Promise.reject(errors[0]);
         }
 
-        return Machine.run(input, this.spec);
+        return Machine.run(input, spec);
     }
 
     static run(input, spec) {

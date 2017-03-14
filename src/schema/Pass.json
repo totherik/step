@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "oneOf": [{
+      "required": [
+        "Next"
+      ]
+    },
+    {
+      "required": [
+        "End"
+      ]
+    }
+  ],
+  "properties": {
+    "Type": {
+      "enum": [
+        "Pass"
+      ]
+    },
+    "Result": {
+      "type": "any"
+    },
+    "InputPath": {
+      "$ref": "/Path"
+    },
+    "OutputPath": {
+      "$ref": "/Path"
+    },
+    "ResultPath": {
+      "$ref": "/Path"
+    },
+    "Next": {
+      "type": "string"
+    },
+    "End": {
+      "enum": [
+        true
+      ]
+    }
+  },
+  "additionalProperties": false
+}

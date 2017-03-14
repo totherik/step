@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "required": [
+    "Choices"
+  ],
+  "properties": {
+    "Type": {
+      "enum": [
+        "Choice"
+      ]
+    },
+    "InputPath": {
+      "$ref": "/Path"
+    },
+    "OutputPath": {
+      "$ref": "/Path"
+    },
+    "Choices": {
+      "type": "array",
+      "items": {
+        "$ref": "/TopLevelChoiceRule"
+      }
+    },
+    "Default": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

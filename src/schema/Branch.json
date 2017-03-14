@@ -1,0 +1,17 @@
+{
+  "type": "array",
+  "items": {
+    "required": [
+      "States",
+      "StartAt"
+    ],
+    "properties": {
+      "States": {
+        "$ref": "/States"
+      },
+      "StartAt": {
+        "type": "string"
+      }
+    }
+  }
+}

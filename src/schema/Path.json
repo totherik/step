@@ -1,0 +1,9 @@
+{
+  "oneOf": [{
+      "type": "string"
+    },
+    {
+      "type": "null"
+    }
+  ]
+}

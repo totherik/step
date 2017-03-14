@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "States",
+    "StartAt"
+  ],
+  "properties": {
+    "States": {
+      "$ref": "/States"
+    },
+    "StartAt": {
+      "type": "string"
+    },
+    "Comment": {
+      "type": "string"
+    },
+    "Version": {
+      "type": "string"
+    },
+    "TimeoutSeconds": {
+      "type": "integer"
+    }
+  }
+}

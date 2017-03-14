@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required": [
+    "Error",
+    "Cause"
+  ],
+  "properties": {
+    "Type": {
+      "enum": [
+        "Fail"
+      ]
+    },
+    "Error": {
+      "type": "string"
+    },
+    "Cause": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

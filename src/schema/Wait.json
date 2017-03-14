@@ -1,0 +1,74 @@
+{
+  "type": "object",
+  "allOf": [{
+      "oneOf": [{
+          "required": [
+            "Seconds"
+          ]
+        },
+        {
+          "required": [
+            "SecondsPath"
+          ]
+        },
+        {
+          "required": [
+            "Timestamp"
+          ]
+        },
+        {
+          "required": [
+            "TimestampsPath"
+          ]
+        }
+      ]
+    },
+    {
+      "oneOf": [{
+          "required": [
+            "Next"
+          ]
+        },
+        {
+          "required": [
+            "End"
+          ]
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "Type": {
+      "enum": [
+        "Wait"
+      ]
+    },
+    "InputPath": {
+      "$ref": "/Path"
+    },
+    "OutputPath": {
+      "$ref": "/Path"
+    },
+    "Seconds": {
+      "$ref": "/PositiveInteger"
+    },
+    "SecondsPath": {
+      "type": "string"
+    },
+    "Timestamp": {
+      "$ref": "/Timestamp"
+    },
+    "TimestampsPath": {
+      "type": "string"
+    },
+    "Next": {
+      "type": "string"
+    },
+    "End": {
+      "enum": [
+        true
+      ]
+    }
+  },
+  "additionalProperties": false
+}

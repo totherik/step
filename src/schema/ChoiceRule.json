@@ -1,0 +1,165 @@
+{
+  "type": "object",
+  "oneOf": [{
+      "required": [
+        "StringEquals"
+      ]
+    },
+    {
+      "required": [
+        "StringLessThan"
+      ]
+    },
+    {
+      "required": [
+        "StringGreaterThan"
+      ]
+    },
+    {
+      "required": [
+        "StringLessThanEquals"
+      ]
+    },
+    {
+      "required": [
+        "StringGreaterThanEquals"
+      ]
+    },
+    {
+      "required": [
+        "NumericEquals"
+      ]
+    },
+    {
+      "required": [
+        "NumericLessThan"
+      ]
+    },
+    {
+      "required": [
+        "NumericGreaterThan"
+      ]
+    },
+    {
+      "required": [
+        "NumericLessThanEquals"
+      ]
+    },
+    {
+      "required": [
+        "NumericGreaterThanEquals"
+      ]
+    },
+    {
+      "required": [
+        "BooleanEquals"
+      ]
+    },
+    {
+      "required": [
+        "TimestampEquals"
+      ]
+    },
+    {
+      "required": [
+        "TimestampLessThan"
+      ]
+    },
+    {
+      "required": [
+        "TimestampGreaterThan"
+      ]
+    },
+    {
+      "required": [
+        "TimestampLessThanEquals"
+      ]
+    },
+    {
+      "required": [
+        "TimestampGreaterThanEquals"
+      ]
+    },
+    {
+      "required": [
+        "And"
+      ]
+    },
+    {
+      "required": [
+        "Or"
+      ]
+    },
+    {
+      "required": [
+        "Not"
+      ]
+    }
+  ],
+  "properties": {
+    "StringEquals": {
+      "type": "string"
+    },
+    "StringLessThan": {
+      "type": "string"
+    },
+    "StringGreaterThan": {
+      "type": "string"
+    },
+    "StringLessThanEquals": {
+      "type": "string"
+    },
+    "StringGreaterThanEquals": {
+      "type": "string"
+    },
+    "NumericEquals": {
+      "type": "number"
+    },
+    "NumericLessThan": {
+      "type": "number"
+    },
+    "NumericGreaterThan": {
+      "type": "number"
+    },
+    "NumericLessThanEquals": {
+      "type": "number"
+    },
+    "NumericGreaterThanEquals": {
+      "type": "number"
+    },
+    "BooleanEquals": {
+      "type": "boolean"
+    },
+    "TimestampEquals": {
+      "$ref": "/Timestamp"
+    },
+    "TimestampLessThan": {
+      "$ref": "/Timestamp"
+    },
+    "TimestampGreaterThan": {
+      "$ref": "/Timestamp"
+    },
+    "TimestampLessThanEquals": {
+      "$ref": "/Timestamp"
+    },
+    "TimestampGreaterThanEquals": {
+      "$ref": "/Timestamp"
+    },
+    "And": {
+      "type": "array",
+      "items": {
+        "$ref": "/ChoiceRule"
+      }
+    },
+    "Or": {
+      "type": "array",
+      "items": {
+        "$ref": "/ChoiceRule"
+      }
+    },
+    "Not": {
+      "$ref": "/ChoiceRule"
+    }
+  },
+  "additionalProperties": false
+}

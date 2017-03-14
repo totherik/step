@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "Next"
+  ],
+  "properties": {
+    "Next": {
+      "type": "string"
+    }
+  },
+  "$ref": "/ChoiceRule"
+}

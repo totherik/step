@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "required": [
+    "Branches"
+  ],
+  "oneOf": [{
+      "required": [
+        "Next"
+      ]
+    },
+    {
+      "required": [
+        "End"
+      ]
+    }
+  ],
+  "properties": {
+    "Type": {
+      "enum": [
+        "Parallel"
+      ]
+    },
+    "Branches": {
+      "$ref": "/Branch"
+    },
+    "InputPath": {
+      "$ref": "/Path"
+    },
+    "OutputPath": {
+      "$ref": "/Path"
+    },
+    "ResultPath": {
+      "$ref": "/Path"
+    },
+    "Next": {
+      "type": "string"
+    },
+    "End": {
+      "enum": [
+        true
+      ]
+    },
+    "Retry": {
+      "type": "string"
+    },
+    "Catch": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "patternProperties": {
+    "^.*$": {
+      "allOf": [{
+          "$ref": "/State"
+        },
+        {
+          "oneOf": [{
+              "$ref": "/Pass"
+            },
+            {
+              "$ref": "/Task"
+            },
+            {
+              "$ref": "/Choice"
+            },
+            {
+              "$ref": "/Wait"
+            },
+            {
+              "$ref": "/Parallel"
+            },
+            {
+              "$ref": "/Succeed"
+            },
+            {
+              "$ref": "/Fail"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

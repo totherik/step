@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "Type": {
+      "enum": [
+        "Succeed"
+      ]
+    },
+    "InputPath": {
+      "$ref": "/Path"
+    },
+    "OutputPath": {
+      "$ref": "/Path"
+    }
+  },
+  "additionalProperties": false
+}

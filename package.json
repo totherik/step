@@ -1,0 +1,29 @@
+{
+  "name": "step",
+  "version": "1.0.0",
+  "description": "An Amazon States Language implementation in JavaScript.",
+  "main": "src/index.js",
+  "directories": {
+    "src": "src"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/totherik/step.git"
+  },
+  "author": "Erik Toth <totherik@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/totherik/step/issues"
+  },
+  "homepage": "https://github.com/totherik/step#readme",
+  "devDependencies": {
+    "ava": "^0.18.2"
+  },
+  "dependencies": {
+    "jsonpath": "^0.2.11",
+    "jsonschema": "^1.1.1"
+  }
+}

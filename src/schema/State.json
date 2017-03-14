@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required": [
+    "Type"
+  ],
+  "properties": {
+    "Type": {
+      "type": "string"
+    },
+    "Comment": {
+      "type": "string"
+    }
+  }
+}

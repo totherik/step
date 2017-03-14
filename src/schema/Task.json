@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "required": [
+    "Resource"
+  ],
+  "oneOf": [{
+      "required": [
+        "Next"
+      ]
+    },
+    {
+      "required": [
+        "End"
+      ]
+    }
+  ],
+  "properties": {
+    "Type": {
+      "enum": [
+        "Task"
+      ]
+    },
+    "InputPath": {
+      "$ref": "/Path"
+    },
+    "OutputPath": {
+      "$ref": "/Path"
+    },
+    "ResultPath": {
+      "$ref": "/Path"
+    },
+    "Next": {
+      "type": "string"
+    },
+    "End": {
+      "enum": [
+        true
+      ]
+    },
+    "Retry": {
+      "type": "string"
+    },
+    "Catch": {
+      "type": "string"
+    },
+    "Resource": {
+      "type": "string"
+    },
+    "TimeoutSeconds": {
+      "$ref": "/PositiveInteger"
+    },
+    "HeartbeatSeconds": {
+      "$ref": "/PositiveInteger"
+    }
+  },
+  "additionalProperties": false
+}

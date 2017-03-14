@@ -9,6 +9,7 @@ const INDEFINITE_TYPES = new Map([
     [ 'wildcard', true ],
 ]);
 
+
 const INDEFINITE_SCOPES = new Map([
     [ 'descendant', true ],
 ]);
@@ -29,6 +30,20 @@ function isDefinitePath(path) {
 }
 
 
+function query(object, path) {
+    if (path === null) {
+        return {};
+    }
+
+    if (isDefinitePath(path)) {
+        return JSONPath.value(object, path);
+    }
+
+    return JSONPath.query(object, path);
+}
+
+
 module.exports = {
     isDefinitePath,
+    query,
 };

@@ -37,7 +37,8 @@ class State {
     }
 
     run(promise) {
-        const { impl, name, spec: { InputPath = '$', ResultPath = '$', OutputPath = '$' } } = this;
+        const { name, spec, impl } = this;
+        const { InputPath = '$', ResultPath = '$', OutputPath = '$' } = spec;
 
         return promise
             .then(data => query(data, InputPath)) // Input filter

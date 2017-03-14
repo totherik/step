@@ -31,6 +31,17 @@ function isDefinitePath(path) {
 
 
 function query(object, path) {
+    /**
+     * Per: https://states-language.net/spec.html#filters
+     *
+     * If the value of InputPath is null, that means that the raw input is
+     * discarded, and the effective input for the state is an empty JSON
+     * object, {}.
+     *
+     * If the value of OutputPath is null, that means the input and result
+     * are discarded, and the effective output from the state is an empty
+     * JSON object, {}.
+     */
     if (path === null) {
         return {};
     }

@@ -1,6 +1,7 @@
 # step
 
-An [Amazon State Language](https://states-language.net/spec.html) based State Machine.
+An [Amazon State Language](https://states-language.net/spec.html) based state machine.
+
 
 ## Basic API
 ```js
@@ -28,7 +29,7 @@ const input = {
     },
 };
 
-const machine = new Machine(definition);
+const machine = Machine.create(definition);
 const result = await machine.run(input);
 console.log(result);
 ```

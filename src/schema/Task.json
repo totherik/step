@@ -1,24 +1,17 @@
 {
   "type": "object",
-  "required": [
-    "Resource"
-  ],
-  "oneOf": [{
-      "required": [
-        "Next"
-      ]
+  "required": [ "Resource" ],
+  "oneOf": [
+    {
+      "required": [ "Next" ]
     },
     {
-      "required": [
-        "End"
-      ]
+      "required": [ "End" ]
     }
   ],
   "properties": {
     "Type": {
-      "enum": [
-        "Task"
-      ]
+      "enum": [ "Task" ]
     },
     "InputPath": {
       "$ref": "/Path"
@@ -30,21 +23,19 @@
       "$ref": "/Path"
     },
     "Next": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "End": {
-      "enum": [
-        true
-      ]
+      "enum": [ true ]
     },
     "Retry": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "Catch": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "Resource": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "TimeoutSeconds": {
       "$ref": "/PositiveInteger"

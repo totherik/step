@@ -1,16 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "required": [
-    "States",
-    "StartAt"
-  ],
+  "required": [ "States", "StartAt" ],
   "properties": {
     "States": {
       "$ref": "/States"
     },
     "StartAt": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "Comment": {
       "type": "string"

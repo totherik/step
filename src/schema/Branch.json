@@ -1,16 +1,13 @@
 {
   "type": "array",
   "items": {
-    "required": [
-      "States",
-      "StartAt"
-    ],
+    "required": [ "States", "StartAt" ],
     "properties": {
       "States": {
         "$ref": "/States"
       },
       "StartAt": {
-        "type": "string"
+        "$ref": "/NonEmptyString"
       }
     }
   }

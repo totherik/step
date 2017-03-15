@@ -1,6 +1,19 @@
 const test = require('ava');
-const { validate } = require('../');
+const Schema = require('../');
 
+
+test('Invalid', t => {
+
+    const invalid = {
+        StartAt: '',
+        States: null
+    };
+
+    t.throws(() => {
+        Schema.validate(invalid);
+    });
+
+});
 
 test('Pass Type', t => {
 
@@ -25,7 +38,6 @@ test('Pass Type', t => {
         }
     };
 
-    const { errors } = validate(pass);
-    t.is(errors.length, 0);
+    Schema.validate(pass);
 
 });

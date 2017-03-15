@@ -1,47 +1,35 @@
 {
   "type": "object",
   "allOf": [{
-      "oneOf": [{
-          "required": [
-            "Seconds"
-          ]
+      "oneOf": [
+        {
+          "required": [ "Seconds" ]
         },
         {
-          "required": [
-            "SecondsPath"
-          ]
+          "required": [ "SecondsPath" ]
         },
         {
-          "required": [
-            "Timestamp"
-          ]
+          "required": [ "Timestamp" ]
         },
         {
-          "required": [
-            "TimestampsPath"
-          ]
+          "required": [ "TimestampsPath" ]
         }
       ]
     },
     {
-      "oneOf": [{
-          "required": [
-            "Next"
-          ]
+      "oneOf": [
+        {
+          "required": [ "Next" ]
         },
         {
-          "required": [
-            "End"
-          ]
+          "required": [ "End" ]
         }
       ]
     }
   ],
   "properties": {
     "Type": {
-      "enum": [
-        "Wait"
-      ]
+      "enum": [ "Wait" ]
     },
     "InputPath": {
       "$ref": "/Path"
@@ -53,7 +41,7 @@
       "$ref": "/PositiveInteger"
     },
     "SecondsPath": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "Timestamp": {
       "$ref": "/Timestamp"
@@ -62,12 +50,10 @@
       "type": "string"
     },
     "Next": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "End": {
-      "enum": [
-        true
-      ]
+      "enum": [ true ]
     }
   },
   "additionalProperties": false

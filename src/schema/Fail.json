@@ -1,14 +1,9 @@
 {
   "type": "object",
-  "required": [
-    "Error",
-    "Cause"
-  ],
+  "required": [ "Error", "Cause" ],
   "properties": {
     "Type": {
-      "enum": [
-        "Fail"
-      ]
+      "enum": [ "Fail" ]
     },
     "Error": {
       "type": "string"

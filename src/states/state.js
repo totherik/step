@@ -1,5 +1,5 @@
 const JSONPath = require('jsonpath');
-const { query } = require('../../utils');
+const { query } = require('../utils');
 
 
 const states = new Map([

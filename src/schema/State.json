@@ -1,11 +1,9 @@
 {
   "type": "object",
-  "required": [
-    "Type"
-  ],
+  "required": [ "Type" ],
   "properties": {
     "Type": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "Comment": {
       "type": "string"

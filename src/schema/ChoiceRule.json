@@ -1,116 +1,79 @@
 {
   "type": "object",
-  "oneOf": [{
-      "required": [
-        "StringEquals"
-      ]
+  "oneOf": [
+    {
+      "required": [ "StringEquals" ]
     },
     {
-      "required": [
-        "StringLessThan"
-      ]
+      "required": [ "StringLessThan" ]
     },
     {
-      "required": [
-        "StringGreaterThan"
-      ]
+      "required": [ "StringGreaterThan" ]
     },
     {
-      "required": [
-        "StringLessThanEquals"
-      ]
+      "required": [ "StringLessThanEquals" ]
     },
     {
-      "required": [
-        "StringGreaterThanEquals"
-      ]
+      "required": [ "StringGreaterThanEquals" ]
     },
     {
-      "required": [
-        "NumericEquals"
-      ]
+      "required": [ "NumericEquals" ]
     },
     {
-      "required": [
-        "NumericLessThan"
-      ]
+      "required": [ "NumericLessThan" ]
     },
     {
-      "required": [
-        "NumericGreaterThan"
-      ]
+      "required": [ "NumericGreaterThan" ]
     },
     {
-      "required": [
-        "NumericLessThanEquals"
-      ]
+      "required": [ "NumericLessThanEquals" ]
     },
     {
-      "required": [
-        "NumericGreaterThanEquals"
-      ]
+      "required": [ "NumericGreaterThanEquals" ]
     },
     {
-      "required": [
-        "BooleanEquals"
-      ]
+      "required": [ "BooleanEquals" ]
     },
     {
-      "required": [
-        "TimestampEquals"
-      ]
+      "required": [ "TimestampEquals" ]
     },
     {
-      "required": [
-        "TimestampLessThan"
-      ]
+      "required": [ "TimestampLessThan" ]
     },
     {
-      "required": [
-        "TimestampGreaterThan"
-      ]
+      "required": [ "TimestampGreaterThan" ]
     },
     {
-      "required": [
-        "TimestampLessThanEquals"
-      ]
+      "required": [ "TimestampLessThanEquals" ]
     },
     {
-      "required": [
-        "TimestampGreaterThanEquals"
-      ]
+      "required": [ "TimestampGreaterThanEquals" ]
     },
     {
-      "required": [
-        "And"
-      ]
+      "required": [ "And" ]
     },
     {
-      "required": [
-        "Or"
-      ]
+      "required": [ "Or" ]
     },
     {
-      "required": [
-        "Not"
-      ]
+      "required": [ "Not" ]
     }
   ],
   "properties": {
     "StringEquals": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "StringLessThan": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "StringGreaterThan": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "StringLessThanEquals": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "StringGreaterThanEquals": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "NumericEquals": {
       "type": "number"

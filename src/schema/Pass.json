@@ -1,21 +1,16 @@
 {
   "type": "object",
-  "oneOf": [{
-      "required": [
-        "Next"
-      ]
+  "oneOf": [
+    {
+      "required": [ "Next" ]
     },
     {
-      "required": [
-        "End"
-      ]
+      "required": [ "End" ]
     }
   ],
   "properties": {
     "Type": {
-      "enum": [
-        "Pass"
-      ]
+      "enum": [ "Pass" ]
     },
     "Result": {
       "type": "any"
@@ -30,12 +25,10 @@
       "$ref": "/Path"
     },
     "Next": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "End": {
-      "enum": [
-        true
-      ]
+      "enum": [ true ]
     }
   },
   "additionalProperties": false

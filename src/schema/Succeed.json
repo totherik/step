@@ -2,9 +2,7 @@
   "type": "object",
   "properties": {
     "Type": {
-      "enum": [
-        "Succeed"
-      ]
+      "enum": [ "Succeed" ]
     },
     "InputPath": {
       "$ref": "/Path"

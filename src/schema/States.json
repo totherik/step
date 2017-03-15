@@ -2,11 +2,13 @@
   "type": "object",
   "patternProperties": {
     "^.*$": {
-      "allOf": [{
+      "allOf": [
+        {
           "$ref": "/State"
         },
         {
-          "oneOf": [{
+          "oneOf": [
+            {
               "$ref": "/Pass"
             },
             {

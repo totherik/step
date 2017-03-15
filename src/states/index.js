@@ -1,23 +1,7 @@
-const { validate } = require('../schema');
-const State = require('./states');
+const State = require('./state');
 
 
-class Machine {
-
-    constructor(spec) {
-        this.spec = spec;
-    }
-
-    run(input) {
-        const { spec } = this;
-        const { errors } = validate(spec);
-
-        if (errors.length) {
-            return Promise.reject(errors[0]);
-        }
-
-        return Machine.run(input, spec);
-    }
+class States {
 
     static run(input, spec) {
         const { StartAt, States } = spec;
@@ -45,4 +29,5 @@ class Machine {
 
 }
 
-module.exports = Machine;
+
+module.exports = States;

@@ -1,5 +1,5 @@
 const test = require('ava');
-const { Machine } = require('./index');
+const Machine = require('./index');
 
 
 test('Pass', t => {
@@ -28,7 +28,7 @@ test('Pass', t => {
         },
     };
 
-    const machine = new Machine(states);
+    const machine = Machine.create(states);
     return machine.run(input).then(result => {
         t.deepEqual(result, { a: 'b' });
     });

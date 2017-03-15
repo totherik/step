@@ -1,24 +1,17 @@
 {
   "type": "object",
-  "required": [
-    "Branches"
-  ],
-  "oneOf": [{
-      "required": [
-        "Next"
-      ]
+  "required": [ "Branches" ],
+  "oneOf": [
+    {
+      "required": [ "Next" ]
     },
     {
-      "required": [
-        "End"
-      ]
+      "required": [ "End" ]
     }
   ],
   "properties": {
     "Type": {
-      "enum": [
-        "Parallel"
-      ]
+      "enum": [ "Parallel" ]
     },
     "Branches": {
       "$ref": "/Branch"
@@ -33,18 +26,16 @@
       "$ref": "/Path"
     },
     "Next": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "End": {
-      "enum": [
-        true
-      ]
+      "enum": [ true ]
     },
     "Retry": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     },
     "Catch": {
-      "type": "string"
+      "$ref": "/NonEmptyString"
     }
   },
   "additionalProperties": false

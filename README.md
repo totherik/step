@@ -19,6 +19,8 @@ based on the provided spec. The platform could either change the implementation
 of how it would fulfill remote Tasks based on the FaaS provider, or the
 implementation could be provided by the author. (I like this one, personally.)
 
+See additional [notes below](#notes).
+
 ## Basic API
 ```js
 const json = {

@@ -1,8 +1,8 @@
 const test = require('ava');
-const Utils = require('./utils');
+const PathUtils = require('./pathutils');
 
 
-test('Utils.isDefinitePath', t => {
+test('PathUtils.isDefinitePath', t => {
 
     const definite = [
         '$',
@@ -30,11 +30,11 @@ test('Utils.isDefinitePath', t => {
     ];
 
     for (let path of definite) {
-        t.true(Utils.isDefinitePath(path));
+        t.true(PathUtils.isDefinitePath(path));
     }
 
     for (let path of indefinite) {
-        t.false(Utils.isDefinitePath(path));
+        t.false(PathUtils.isDefinitePath(path));
     }
 
 });

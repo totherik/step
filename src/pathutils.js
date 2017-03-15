@@ -54,7 +54,17 @@ function query(object, path) {
 }
 
 
+function parse(path) {
+    return JSONPath.parse(path);
+}
+
+
+/**
+ * Centralized dependency on JSONPath b/c I'm not super happy with it and am
+ * entertaining finding a replacement.
+ */
 module.exports = {
     isDefinitePath,
     query,
+    parse,
 };

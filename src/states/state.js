@@ -1,5 +1,4 @@
-const JSONPath = require('jsonpath');
-const { query } = require('../utils');
+const PathUtils = require('../pathutils');
 
 
 const states = new Map([
@@ -43,10 +42,10 @@ class State {
         const { InputPath = '$', ResultPath = '$', OutputPath = '$' } = spec;
 
         return promise
-            .then(data => query(data, InputPath)) // Input filter
+            .then(data => PathUtils.query(data, InputPath)) // Input filter
             .then(input => impl(input).then(result => ({ name, input, result, ResultPath })))
             .then(this.applyResult) // Result filter
-            .then(result => query(result, OutputPath)); // Output filter
+            .then(result => PathUtils.query(result, OutputPath)); // Output filter
     }
 
     applyResult({ name, input, result, ResultPath }) {
@@ -87,7 +86,7 @@ class State {
          * operate on the input object directly. After this operation
          * completes the structure of `input` has changed.
          */
-        const parsed = JSONPath.parse(ResultPath)
+        const parsed = PathUtils.parse(ResultPath)
         parsed.reduce((target, path, index, paths) => {
             const { expression: { type, value }, operation, scope } = path;
 

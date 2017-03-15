@@ -15,12 +15,6 @@ const states = new Map([
 
 class State {
 
-    constructor(name, spec, impl) {
-        this.name = name;
-        this.spec = spec;
-        this.impl = impl.bind(null, name, spec);
-    }
-
     static create(name, spec) {
         const { Type } = spec;
 
@@ -36,6 +30,12 @@ class State {
          */
         const handler = states.get(Type);
         return new State(name, spec, handler);
+    }
+
+    constructor(name, spec, impl) {
+        this.name = name;
+        this.spec = spec;
+        this.impl = impl.bind(null, name, spec);
     }
 
     run(promise) {

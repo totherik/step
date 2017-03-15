@@ -22,6 +22,17 @@ class States {
             const { Next } = task;
             name = Next;
             task = States[Next];
+
+            if (!task) {
+                /**
+                 * TODO: https://github.com/totherik/step/issues/1
+                 * This should not be done at runtime.
+                 * Also, don't abandon the existing promise chain, so
+                 * procced, break the while, and return.
+                 */
+                const error = new Error(`State "${name}" not defined.`);
+                promise = promise.then(() => Promise.reject(error));
+            }
         }
 
         return promise;

@@ -34,3 +34,27 @@ test('Pass', t => {
     });
 
 });
+
+test('Missing State definition', t => {
+
+    const states = {
+        StartAt: 'Missing',
+        States: {
+            Missing: {
+                Type: 'Pass',
+                Result: {
+                    pass: {
+                        a: 'b',
+                    },
+                },
+                Next: 'DoesNotExist',
+            },
+        },
+    };
+
+    const machine = Machine.create(states);
+    return machine.run({}).catch(err => {
+        t.is(err.message, 'State "DoesNotExist" not defined.');
+        return Promise.resolve({});
+    });
+});

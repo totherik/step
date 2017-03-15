@@ -46,6 +46,8 @@ across providers.
 - There are many things in this codebase that could be written much more tersely.
 The goal is to keep expressiveness and readability until other factors, such as
 performance, dictate otherwise.
-- The overall mental model here is `Machine` (index.js) -> `States` (states/index.js)
--> {1..n} `State` (states/state.js) -> `Type` (states/\*.js) where the `State`
-implementation is provided by the `Type` in a kind of Flyweight pattern.
+- The overall mental model here is `Machine -> States -> {1..n} State -> Type`
+where the `State` implementation is provided by the `Type` in a kind of
+Flyweight pattern.
+- Be aware that some `Type`s compose `States` as well. For example, `Parallel`
+and `Choice` run state machines internal to their type.

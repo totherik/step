@@ -35,6 +35,7 @@ function init(schema, name) {
 }
 
 
+// Build the Schema at initialization-time.
 const name = '/Schema';
 const schema = { $ref: name };
 const validate = init(schema, name);

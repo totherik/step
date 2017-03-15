@@ -51,3 +51,5 @@ where the `State` implementation is provided by the `Type` in a kind of
 Flyweight pattern.
 - Be aware that some `Type`s compose `States` as well. For example, `Parallel`
 and `Choice` run state machines internal to their type.
+- Even though Classes are used, this codebase favors exposing Factories over
+Constructors both internally and externally.

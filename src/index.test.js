@@ -1,6 +1,7 @@
 const test = require('ava');
 const { Machine } = require('./index');
 
+
 test('Pass', t => {
 
     const states = {

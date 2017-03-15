@@ -1,6 +1,7 @@
 const test = require('ava');
 const Utils = require('./utils');
 
+
 test('Utils.isDefinitePath', t => {
 
     const definite = [

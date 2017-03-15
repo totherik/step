@@ -5,7 +5,7 @@ An [Amazon State Language](https://states-language.net/spec.html) based state ma
 
 ## Basic API
 ```js
-const definition = {
+const json = {
     "StartAt": "Demo",
     "States": {
         "Demo": {
@@ -29,7 +29,7 @@ const input = {
     },
 };
 
-const machine = Machine.create(definition);
+const machine = Machine.create(json);
 const result = await machine.run(input);
 console.log(result);
 ```

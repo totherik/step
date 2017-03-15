@@ -1,6 +1,6 @@
 # step
 
-A implementation of an Amazon State Language State Machine.
+An [Amazon State Language](https://states-language.net/spec.html) based State Machine.
 
 ## Basic API
 ```js

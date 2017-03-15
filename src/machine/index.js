@@ -11,7 +11,7 @@ class Machine {
     run(input) {
         const { spec } = this;
         const { errors } = validate(spec);
-        
+
         if (errors.length) {
             return Promise.reject(errors[0]);
         }
@@ -24,11 +24,11 @@ class Machine {
 
         let name = StartAt;
         let task = States[name];
-        let machine = Promise.resolve(input);
+        let promise = Promise.resolve(input);
 
         while (task) {
             const state = State.create(name, task);
-            machine = state.run(machine);
+            promise = state.run(promise);
 
             const { End, Type } = task;
             if (End || Type === 'Succeed' || Type === 'Fail') {
@@ -40,7 +40,7 @@ class Machine {
             task = States[Next];
         }
 
-        return machine;
+        return promise;
     }
 
 }

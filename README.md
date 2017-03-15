@@ -29,7 +29,8 @@ const input = {
 };
 
 const machine = new Machine(definition);
-machine.run(input);
+const result = await machine.run(input);
+console.log(result);
 ```
 
 ## Testing

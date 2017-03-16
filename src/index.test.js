@@ -161,6 +161,7 @@ test('Pass', t => {
 
 });
 
+
 test('Missing State definition', t => {
 
     const states = {
@@ -183,4 +184,5 @@ test('Missing State definition', t => {
         t.is(err.message, 'State "DoesNotExist" not defined.');
         return Promise.resolve({});
     });
+    
 });

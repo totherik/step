@@ -14,6 +14,16 @@ class States {
             const state = State.create(name, task);
             promise = state.run(promise);
 
+            /**
+             * Terminal State
+             * https://states-language.net/spec.html#terminal-state
+             *
+             * "Any state except for Choice, Succeed, and Fail MAY have a
+             * field named "End" whose value MUST be a boolean. The term
+             * 'Terminal State' means a state with with { 'End': true }, or
+             * a state with { 'Type': 'Succeed' }, or a state with
+             * { 'Type': 'Fail' }."
+             */
             const { End, Type } = task;
             if (End || Type === 'Succeed' || Type === 'Fail') {
                 break;

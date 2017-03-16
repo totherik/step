@@ -2,7 +2,7 @@ const test = require('ava');
 const Schema = require('../');
 
 
-test('Invalid', t => {
+test('Invalid Schema', t => {
 
     const invalid = {
         StartAt: '',
@@ -19,22 +19,22 @@ test('Invalid', t => {
 test('Pass Type', t => {
 
     const pass = {
-        "StartAt": "PassTest",
-        "States": {
-            "PassTest": {
-                "Type": "Pass",
-                "InputPath": "$",
-                "ResultPath": "$.foo",
-                "OutputPath": "$.foo.pass",
-                "Result": {
-                    "pass": {
-                        "a": "b"
+        StartAt: "PassTest",
+        States: {
+            PassTest: {
+                Type: "Pass",
+                InputPath: "$",
+                ResultPath: "$.foo",
+                OutputPath: "$.foo.pass",
+                Result: {
+                    pass: {
+                        a: "b"
                     }
                 },
-                "Next": "Done"
+                Next: "Done"
             },
-            "Done": {
-                "Type": "Succeed"
+            Done: {
+                Type: "Succeed"
             }
         }
     };

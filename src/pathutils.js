@@ -46,6 +46,10 @@ function query(object, path) {
         return {};
     }
 
+    if (path === '$') {
+        return object;
+    }
+
     if (isDefinitePath(path)) {
         return JSONPath.value(object, path);
     }

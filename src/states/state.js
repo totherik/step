@@ -110,17 +110,36 @@ class State {
                 }
 
                 /**
-                 * The spec reads as if we should only deal in objects.
-                 * In that case we'll either 1) overwrite anything that's
-                 * NOT an object with a new object, or 2) create a new
-                 * object where none exists.
+                 * @see Runtime Errors - https://states-language.net/spec.html
+                 *
+                 * "Suppose a state’s input is the string 'foo', and its
+                 * 'ResultPath' field has the value '$.x'. Then ResultPath
+                 * cannot apply and the Interpreter fails the machine with
+                 * Error Name of 'States.OutputMatchFailure'."
+                 *
+                 * If I'm reading this correctly, due to the constraints
+                 * of Reference Paths, if the ResultPath can't resolve to
+                 * a single property on an object (non-primitive) type,
+                 * it must fail.
+                 *
+                 * This code takes the most literal interpretation and
+                 * only allows object type operations, excluding Array
+                 * indicies, etc. This constraint can be relaxed in the
+                 * future, if necessary.
                  */
-                const current = target[value];
-                if (typeof current !== 'object' || Array.isArray(current)) {
-                    target[value] = {};
+                const child = target[value];
+                if (typeof child !== 'object' || Array.isArray(child)) {
+                    const error = new Error(`Unable to match ResultPath "${ResultPath}".`)
+                    error.name = 'States.OutputMatchFailure';
+                    throw new Error;
                 }
 
-                return target = target[value];
+
+                if (typeof child === undefined) {
+                    child = target[value] = {};
+                }
+
+                return target = child;
             }
 
             throw new Error(`Invalid ResultPath for state "${name}". Provided "${ResultPath}", but ResultPath must be a Reference Path (https://states-language.net/spec.html#path).`);

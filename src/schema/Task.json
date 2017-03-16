@@ -29,10 +29,16 @@
       "enum": [ true ]
     },
     "Retry": {
-      "$ref": "/NonEmptyString"
+      "type": "Array",
+      "items": {
+          "$ref": "/Retrier"
+      }
     },
     "Catch": {
-      "$ref": "/NonEmptyString"
+      "type": "Array",
+      "items": {
+        "$ref": "/Catcher"
+      }
     },
     "Resource": {
       "$ref": "/NonEmptyString"

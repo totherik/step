@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "required": [ "ErrorEquals" ],
+    "properties": {
+        "ErrorEquals": {
+            "type": "array",
+            "items": {
+                "$ref": "/NonEmptyString"
+            },
+            "minLength": 1
+        },
+        "IntervalSeconds": {
+            "$ref": "/PositiveInteger"
+        },
+        "MaxAttempts": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "BackoffRate": {
+            "type": "number",
+            "minimum": 1.0
+        }
+    },
+    "additionalProperties": false
+}

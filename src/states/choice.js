@@ -1,7 +1,7 @@
 
 
-function Choice(name, spec, input) {
+function choice(name, spec, input) {
     return Promise.reject('Not implemented.');
 }
 
-module.exports = Choice;
+module.exports = choice;

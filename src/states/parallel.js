@@ -1,7 +1,7 @@
 const States = require('./');
 
 
-function Parallel(name, spec, input) {
+function parallel(name, spec, input) {
     const { Branches } = spec;
     const machines = Branches.map(branch => {
         // The overall State Machine spec was already validated, so we can
@@ -11,4 +11,4 @@ function Parallel(name, spec, input) {
     return Promise.all(machines);
 }
 
-module.exports = Parallel;
+module.exports = parallel;

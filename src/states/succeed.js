@@ -1,7 +1,7 @@
 
 
-function Succeed(name, spec, input) {
+function succeed(name, spec, input) {
     return Promise.resolve(input);
 }
 
-module.exports = Succeed;
+module.exports = succeed;

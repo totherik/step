@@ -164,7 +164,7 @@ test('Pass', t => {
 
 test('Missing State definition', t => {
 
-    const states = {
+    const json = {
         StartAt: 'Missing',
         States: {
             Missing: {
@@ -179,10 +179,42 @@ test('Missing State definition', t => {
         },
     };
 
-    const machine = Machine.create(states);
+    const machine = Machine.create(json);
     return machine.run({}).catch(err => {
         t.is(err.message, 'State "DoesNotExist" not defined.');
-        return Promise.resolve({});
     });
-    
+
+});
+
+
+test('Retrier', t => {
+
+    const json = {
+        StartAt: 'Error',
+        States: {
+            Error: {
+                Type: 'Task',
+                Resource: 'test',
+                TimeoutSeconds: 1,
+                Retry: [
+                    {
+                        ErrorEquals: [ 'States.Timeout'],
+                    },
+                    {
+                        ErrorEquals: [ 'States.ALL' ],
+                        MaxAttempts: 0,
+                    }
+                ],
+                End: true,
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const promise = machine.run({ SleepSeconds: [ 2, 2, 2, 2 ] });
+    const fails = t.throws(promise);
+    return fails.catch(err => {
+        t.is(err, 'States.Timeout');
+    });
+
 });

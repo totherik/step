@@ -1,10 +1,10 @@
 const wait = require('../wait');
 
 
-class Retryable {
+class Retry {
 
-    static create(task, config) {
-        return new Retryable(task, config);
+    static wrap(task, config) {
+        return new Retry(task, config);
     }
 
     constructor(task, { Retry = [] }) {
@@ -50,15 +50,17 @@ class Retryable {
      */
     run(input) {
 
-        const retry = error => {
-            const retrier = this.match(error)
+        const retry = output => {
+            const { Error } = output;
+            
+            const retrier = this.match(Error)
             if (!retrier) {
-                return Promise.reject(error);
+                return Promise.reject(output);
             }
 
             const { RetryAttempts, MaxAttempts = 3 } = retrier;
             if (RetryAttempts === MaxAttempts) {
-                return Promise.reject(error);
+                return Promise.reject(output);
             }
 
             retrier.RetryAttempts += 1;
@@ -83,4 +85,4 @@ class Retryable {
 }
 
 
-module.exports = Retryable;
+module.exports = Retry;

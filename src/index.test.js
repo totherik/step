@@ -218,3 +218,37 @@ test('Retrier', t => {
     });
 
 });
+
+
+test('Catcher', t => {
+
+    const json = {
+        StartAt: 'Error',
+        States: {
+            Error: {
+                Type: 'Task',
+                Resource: 'test',
+                TimeoutSeconds: 1,
+                Catch: [
+                    {
+                        ErrorEquals: [ 'States.Timeout' ],
+                        Next: 'EndMachine',
+                    },
+                ],
+                End: true,
+            },
+            EndMachine: {
+                Type: 'Pass',
+                End: true,
+            }
+        },
+    };
+
+    const machine = Machine.create(json);
+    return machine.run({ SleepSeconds: [ 2 ] }).then(output => {
+        const { Error, Cause } = output;
+        t.is(Error, 'States.Timeout');
+        t.is(Cause, 'Request timeout.');
+    });
+
+});

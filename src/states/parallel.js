@@ -1,4 +1,4 @@
-const States = require('./');
+const States = require('./states');
 
 
 function parallel(name, spec, input) {

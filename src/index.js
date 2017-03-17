@@ -1,4 +1,4 @@
-const States = require('./states');
+const States = require('./states/states');
 const Schema = require('./schema');
 
 

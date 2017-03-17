@@ -1,4 +1,4 @@
-const Retryable = require('./error/retryable');
+const Retry = require('./error/retry');
 
 
 function mock(spec) {
@@ -6,32 +6,32 @@ function mock(spec) {
 
     return function (input) {
         const { SleepSeconds = [] } = input;
-        // console.log('mock');
+
         return new Promise((resolve, reject) => {
 
             let timer = setTimeout(() => {
-                // console.log('aborting task');
                 clearTimeout(resource);
-                reject('States.Timeout');
+                reject({
+                    Error: 'States.Timeout',
+                    Cause: 'Request timeout.',
+                });
             }, TimeoutSeconds * 1000);
 
             // Mock remote resource.
             let resource = setTimeout(() => {
-                // console.log('clearing timeout');
                 clearTimeout(timer);
                 resolve({ Resource });
             }, (SleepSeconds.shift() || 0) * 1000);
 
         });
     }
-
-
 }
 
 
 function Task(name, spec, input) {
     const task = mock(spec);
-    return Retryable.create(task, spec).run(input);
+    return Retry.wrap(task, spec).run(input);
 }
+
 
 module.exports = Task;

@@ -37,11 +37,11 @@ class State {
         this.impl = impl.bind(null, name, spec);
     }
 
-    run(promise) {
+    run(input) {
         const { name, spec, impl } = this;
         const { InputPath = '$', ResultPath = '$', OutputPath = '$' } = spec;
 
-        return promise
+        return Promise.resolve(input)
             .then(data => PathUtils.query(data, InputPath)) // Input filter
             .then(input => impl(input).then(result => ({ name, input, result, ResultPath })))
             .then(this.applyResult) // Result filter

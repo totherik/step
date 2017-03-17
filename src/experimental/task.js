@@ -33,7 +33,7 @@ class Catcher extends mixins(Runner) {
     }
 
     run(input) {
-        return this.next.run(input);
+        return super.run(input);
     }
 
 }

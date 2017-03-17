@@ -92,8 +92,7 @@ test('Task', t => {
     t.is(state.type, 'Succeed');
 
     return machine.run({}).then(result => {
-        console.log(machine.name);
-        console.log(result);
+        t.truthy(result);
     });
 
 });

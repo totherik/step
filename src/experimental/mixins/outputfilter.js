@@ -17,7 +17,6 @@ function OutputFilter(Base) {
         }
 
         filterOutput(output) {
-            console.log('OutputFilter');
             const { outputPath = '$' } = this;
             return PathUtils.query(output, outputPath);
         }

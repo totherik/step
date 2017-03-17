@@ -17,7 +17,6 @@ function InputFilter(Base) {
         }
 
         filterInput(input) {
-            console.log('InputFilter');
             const { inputPath = '$' } = this;
             return PathUtils.query(input, inputPath);
         }

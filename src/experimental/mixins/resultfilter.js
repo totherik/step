@@ -16,7 +16,6 @@ function ResultFilter(Base) {
         }
 
         filterResult(input, result) {
-            console.log('ResultFilter');
             const { name, resultPath } = this;
 
             // No mapping or merging of data necessary.

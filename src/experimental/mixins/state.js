@@ -12,7 +12,6 @@ function State(Base) {
         }
 
         run(input) {
-            console.log('State');
             return Promise.resolve(input)
                 .then(input => this._run(input));
         }

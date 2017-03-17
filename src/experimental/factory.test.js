@@ -84,8 +84,8 @@ test('Task', t => {
     let state = machine;
     t.is(state.name, 'One');
     t.is(state.type, 'Task');
-    t.is(state.catch.length, 1);
-    t.is(state.catch[0].next, machine.next);
+    t.is(state.catchers.length, 1);
+    t.is(state.catchers[0].next, machine.next);
 
     state = machine.next;
     t.is(state.name, 'Two');
@@ -94,6 +94,56 @@ test('Task', t => {
     return machine.run({}).then(result => {
         console.log(machine.name);
         console.log(result);
+    });
+
+});
+
+
+test('Catch', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Task',
+                Resource: 'test',
+                TimeoutSeconds: 1,
+                Catch: [{
+                    ErrorEquals: [ 'States.ALL' ],
+                    Next: 'Three',
+                }],
+                Next: 'Two',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Broken',
+            }
+        },
+    };
+
+    const factory = Factory.create(json.States);
+    const machine = factory.build(json.StartAt);
+
+    let state = machine;
+    t.is(state.name, 'One');
+    t.is(state.type, 'Task');
+    t.is(state.catchers.length, 1);
+
+    state = machine.catchers[0].next
+    t.is(state.name, 'Three');
+
+    state = machine.next;
+    t.is(state.name, 'Two');
+    t.is(state.type, 'Succeed');
+
+    const promise = machine.run({ SleepSeconds: [ 2 ] });
+    return t.throws(promise).catch(({ Error, Cause }) => {
+        t.is(Error, 'States.Timeout');
+        t.is(Cause, 'Request timeout.');
+        return 'ok';
     });
 
 });

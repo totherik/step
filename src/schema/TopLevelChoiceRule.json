@@ -1,10 +1,16 @@
 {
   "type": "object",
-  "required": [ "Next" ],
-  "properties": {
-    "Next": {
-      "$ref": "/NonEmptyString"
+  "allOf": [
+    {
+      "required": [ "Next" ],
+      "properties": {
+        "Next": {
+          "$ref": "/NonEmptyString"
+        }
+      }
+    },
+    {
+      "$ref": "/ChoiceRule"
     }
-  },
-  "$ref": "/ChoiceRule"
+  ]
 }

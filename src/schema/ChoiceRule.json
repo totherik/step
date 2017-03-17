@@ -122,7 +122,9 @@
     },
     "Not": {
       "$ref": "/ChoiceRule"
+    },
+    "Variable": {
+      "$ref": "/NonEmptyString"
     }
-  },
-  "additionalProperties": false
+  }
 }

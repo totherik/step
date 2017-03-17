@@ -1,14 +1,15 @@
 {
   "type": "array",
   "items": {
-    "required": [ "States", "StartAt" ],
+    "required": [ "StartAt", "States"  ],
     "properties": {
-      "States": {
-        "$ref": "/States"
-      },
       "StartAt": {
         "$ref": "/NonEmptyString"
+      },
+      "States": {
+        "$ref": "/States"
       }
-    }
+    },
+    "additionalProperties": false
   }
 }

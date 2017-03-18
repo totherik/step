@@ -30,7 +30,6 @@ function Retry(Base) {
         }
 
         run(input) {
-
             const attempts = new Map();
 
             const retry = output => {
@@ -66,7 +65,6 @@ function Retry(Base) {
             };
 
             return run(input);
-
         }
 
         match(error) {

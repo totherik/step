@@ -5,7 +5,6 @@ const Fail = require('./fail');
 const Succeed = require('./succeed');
 
 
-
 const StateTypes = new Map([
     [ 'Pass', Pass ],
     [ 'Task', Task ],

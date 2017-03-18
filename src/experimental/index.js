@@ -25,7 +25,22 @@ class Machine {
 
     run(input) {
         // TODO: Implement timeout.
-        return this.next.run(input);
+        return this.next
+            .run(input)
+            .catch(error => {
+                if (error instanceof Error) {
+                    // Normalize errors.
+                    // TODO: May lose stack trace informations here,
+                    // so come up with a better plan.
+                    const { name, message } = error;
+                    error = {
+                        Error: error.name,
+                        Cause: error.message,
+                    };
+                }
+
+                return Promise.reject(error);
+            });
     }
 }
 

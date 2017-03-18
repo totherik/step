@@ -11,8 +11,8 @@ function ResultFilter(Base) {
         }
 
         run(input) {
-            return Promise.resolve(input)
-                .then(input => super.run(input).then(result => this.filterResult(input, result)));
+            return super.run(input)
+                .then(result => this.filterResult(input, result));
         }
 
         filterResult(input, result) {
@@ -98,9 +98,9 @@ function ResultFilter(Base) {
                      */
                     const child = target[value];
                     if (typeof child !== 'object' || Array.isArray(child)) {
-                        const error = new Error(`Unable to match ResultPath "${ResultPath}".`)
-                        error.name = 'States.OutputMatchFailure';
-                        throw new Error;
+                        const error = new Error(`Unable to match ResultPath "${ResultPath}".`);
+                        error.name = 'States.ResultPathMatchFailure';
+                        throw error;
                     }
 
 
@@ -111,7 +111,10 @@ function ResultFilter(Base) {
                     return target = child;
                 }
 
-                throw new Error(`Invalid ResultPath for state "${name}". Provided "${ResultPath}", but ResultPath must be a Reference Path (https://states-language.net/spec.html#path).`);
+                const error = new Error(`Invalid ResultPath for state "${name}". Provided "${resultPath}", but ResultPath must be a Reference Path (https://states-language.net/spec.html#path).`);
+                error.name = 'States.ResultPathMatchFailure';
+                throw error;
+
             }, input);
 
             return input;

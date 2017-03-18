@@ -11,9 +11,7 @@ function OutputFilter(Base) {
         }
 
         run(input) {
-            return Promise.resolve(input)
-                .then(input => super.run(input))
-                .then(output => this.filterOutput(output));
+            return super.run(input).then(output => this.filterOutput(output));
         }
 
         filterOutput(output) {

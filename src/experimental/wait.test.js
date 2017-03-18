@@ -13,35 +13,6 @@ function getInput(seconds = 3) {
 }
 
 
-test('Wait (Default)', t => {
-
-    const then = Date.now();
-    const input = getInput();
-
-    const json = {
-        StartAt: 'One',
-        States: {
-            One: {
-                Type: 'Wait',
-                End: true,
-            },
-        },
-    };
-
-    // This is an arbitrary number just to say that it ran without delay.
-    // May cause false-negatives on very very slow machines?
-    const limit = 100;
-    const machine = Machine.create(json);
-
-    return machine.run(input).then(result => {
-        const now = Date.now();
-        const duration = now - then;
-        t.true(duration < limit);
-    });
-
-});
-
-
 test('Wait (Seconds)', t => {
 
     const then = Date.now();

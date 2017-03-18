@@ -42,7 +42,7 @@ class Catcher extends mixins(Runner) {
 class Task extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State) {
 
     static create(name, spec, factory) {
-        const { Resource, TimeoutSeconds = 60, HeartbeatSeconds, Retry, Catch, Next, End } = spec;
+        const { Resource, TimeoutSeconds = 60, HeartbeatSeconds, Retry = [], Catch = [], Next, End } = spec;
 
         const task = new Task(name, spec);
         task.resource = Resource;

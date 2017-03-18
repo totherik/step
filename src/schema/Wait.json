@@ -12,7 +12,7 @@
           "required": [ "Timestamp" ]
         },
         {
-          "required": [ "TimestampsPath" ]
+          "required": [ "TimestampPath" ]
         }
       ]
     },
@@ -46,7 +46,7 @@
     "Timestamp": {
       "$ref": "/Timestamp"
     },
-    "TimestampsPath": {
+    "TimestampPath": {
       "type": "string"
     },
     "Next": {

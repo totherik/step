@@ -2,49 +2,28 @@ const test = require('ava');
 const Machine = require('./index');
 
 
-test('Pass', t => {
+test('Task', t => {
 
     const json = {
         StartAt: 'One',
         States: {
             One: {
-                Type: 'Pass',
+                Type: 'Task',
+                Resource: 'foo',
                 End: true,
             },
         },
     };
 
     const machine = Machine.create(json);
-    const input = { foo: 'bar' };
-
-    return machine.run(input).then(output => {
-        t.deepEqual(output, input);
-    });
-
-});
-
-
-test('Result', t => {
-
-    const json = {
-        StartAt: 'One',
-        States: {
-            One: {
-                Type: 'Pass',
-                Result: {
-                    bar: 'foo',
-                },
-                End: true,
-            },
+    const input = {
+        Result: {
+            foo: 'bar',
         },
     };
 
-    const machine = Machine.create(json);
-    const input = { foo: 'bar' };
-
     return machine.run(input).then(output => {
-        t.is(output.foo, undefined);
-        t.is(output.bar, 'foo');
+        t.deepEqual(output, input.Result);
     });
 
 });
@@ -56,10 +35,8 @@ test('ResultPath (existing property)', t => {
         StartAt: 'One',
         States: {
             One: {
-                Type: 'Pass',
-                Result: {
-                    bar: 'foo',
-                },
+                Type: 'Task',
+                Resource: 'foo',
                 ResultPath: '$.target',
                 End: true,
             },
@@ -67,11 +44,17 @@ test('ResultPath (existing property)', t => {
     };
 
     const machine = Machine.create(json);
-    const input = { foo: 'bar', target: 'target' };
+    const input = {
+        target: 'target',
+        Result: {
+            foo: 'bar',
+        },
+    };
 
     return machine.run(input).then(output => {
-        t.is(output.foo, 'bar');
-        t.deepEqual(output.target, json.States.One.Result);
+        t.is(output.target.foo, 'bar');
+        t.deepEqual(output.Result, input.Result);
+        t.deepEqual(output.target, output.Result);
     });
 
 });
@@ -83,10 +66,8 @@ test('ResultPath (new property)', t => {
         StartAt: 'One',
         States: {
             One: {
-                Type: 'Pass',
-                Result: {
-                    bar: 'foo',
-                },
+                Type: 'Task',
+                Resource: 'foo',
                 ResultPath: '$.target',
                 End: true,
             },
@@ -94,11 +75,16 @@ test('ResultPath (new property)', t => {
     };
 
     const machine = Machine.create(json);
-    const input = { foo: 'bar' };
+    const input = {
+        Result: {
+            foo: 'bar',
+        },
+    };
 
     return machine.run(input).then(output => {
-        t.is(output.foo, 'bar');
-        t.deepEqual(output.target, json.States.One.Result);
+        t.is(output.target.foo, 'bar');
+        t.deepEqual(output.Result, input.Result);
+        t.deepEqual(output.target, output.Result);
     });
 
 });
@@ -110,10 +96,8 @@ test('ResultPath (non-Reference path)', t => {
         StartAt: 'One',
         States: {
             One: {
-                Type: 'Pass',
-                Result: {
-                    bar: 'foo',
-                },
+                Type: 'Task',
+                Resource: 'foo',
                 ResultPath: '$.*',
                 End: true,
             },
@@ -121,7 +105,11 @@ test('ResultPath (non-Reference path)', t => {
     };
 
     const machine = Machine.create(json);
-    const input = { foo: 'bar' };
+    const input = {
+        Result: {
+            foo: 'bar',
+        },
+    };
 
     return t.throws(machine.run(input)).then(error => {
         const { Error, Cause } = error;
@@ -138,18 +126,25 @@ test('InputPath', t => {
         StartAt: 'One',
         States: {
             One: {
-                Type: 'Pass',
-                InputPath: '$.foo',
+                Type: 'Task',
+                Resource: 'foo',
+                InputPath: '$.nested',
                 End: true,
             },
         },
     };
 
     const machine = Machine.create(json);
-    const input = { foo: 'bar' };
+    const input = {
+        nested: {
+            Result: {
+                foo: 'bar',
+            },
+        },
+    };
 
     return machine.run(input).then(output => {
-        t.is(output, 'bar');
+        t.is(output.foo, 'bar');
     });
 
 });
@@ -161,7 +156,8 @@ test('InputPath null', t => {
         StartAt: 'One',
         States: {
             One: {
-                Type: 'Pass',
+                Type: 'Task',
+                Resource: 'foo',
                 InputPath: null,
                 End: true,
             },
@@ -169,10 +165,17 @@ test('InputPath null', t => {
     };
 
     const machine = Machine.create(json);
-    const input = { foo: 'bar' };
+    const input = {
+        nested: {
+            Result: {
+                foo: 'bar',
+            },
+        },
+    };
 
     return machine.run(input).then(output => {
-        t.is(typeof output, 'object');
+        // Input is new object, so our expected `Result` is not defined.
+        t.is(output, undefined);
         t.notDeepEqual(input, output);
     });
 
@@ -185,7 +188,8 @@ test('OutputPath', t => {
         StartAt: 'One',
         States: {
             One: {
-                Type: 'Pass',
+                Type: 'Task',
+                Resource: 'foo',
                 OutputPath: '$.foo',
                 End: true,
             },
@@ -193,7 +197,11 @@ test('OutputPath', t => {
     };
 
     const machine = Machine.create(json);
-    const input = { foo: 'bar' };
+    const input = {
+        Result: {
+            foo: 'bar',
+        },
+    };
 
     return machine.run(input).then(output => {
         t.is(output, 'bar');
@@ -208,7 +216,8 @@ test('OutputPath null', t => {
         StartAt: 'One',
         States: {
             One: {
-                Type: 'Pass',
+                Type: 'Task',
+                Resource: 'foo',
                 OutputPath: null,
                 End: true,
             },
@@ -216,11 +225,54 @@ test('OutputPath null', t => {
     };
 
     const machine = Machine.create(json);
-    const input = { foo: 'bar' };
+    const input = {
+        Result: {
+            foo: 'bar',
+        },
+    };
 
     return machine.run(input).then(output => {
         t.is(typeof output, 'object');
         t.notDeepEqual(input, output);
+    });
+
+});
+
+
+test('Catch', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Task',
+                Resource: 'test',
+                TimeoutSeconds: 1,
+                Catch: [{
+                    ErrorEquals: [ 'States.ALL' ],
+                    Next: 'Three',
+                }],
+                Next: 'Two',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Broken',
+                Cause: 'Unknown'
+            }
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = {
+        SleepSeconds: [ 2 ]
+    };
+
+    return t.throws(machine.run(input)).then(({ Error, Cause }) => {
+        t.is(Error, 'Broken');
+        t.is(Cause, 'Unknown');
     });
 
 });

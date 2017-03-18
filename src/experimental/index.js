@@ -1,9 +1,12 @@
 const Factory = require('./factory');
+const Schema = require('../schema');
 
 
 class Machine {
 
     static create(json) {
+        Schema.validate(json);
+
         const { StartAt, States, Version, Comment, TimeoutSeconds } = json;
         const factory = Factory.create(States);
 

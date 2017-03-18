@@ -4,7 +4,7 @@ function mock(task) {
     const { resource, timeoutSeconds } = task;
 
     return function (input) {
-        const { SleepSeconds = [] } = input;
+        const { SleepSeconds = [], Result } = input;
 
         return new Promise((resolve, reject) => {
 
@@ -19,7 +19,7 @@ function mock(task) {
             // Mock remote resource.
             let timer = setTimeout(() => {
                 clearTimeout(timeout);
-                resolve({ resource });
+                resolve(Result);
             }, (SleepSeconds.shift() || 0) * 1000);
 
         });

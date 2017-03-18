@@ -13,8 +13,11 @@ class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State
 
         const pass = new Pass(name, spec);
         pass.result = Result;
+
+        // Initialize the Runner mixin properties.
         pass.next = factory.build(Next);
         pass.end = End;
+        
         return pass;
     }
 

@@ -1,26 +1,33 @@
 const State = require('./mixins/state');
+const Catch = require('./mixins/catch');
 const mixins = require('./mixins/mixins');
 const Runner = require('./mixins/runner');
-const Catchable = require('./mixins/catchable');
 const InputFilter = require('./mixins/inputfilter');
 const OutputFilter = require('./mixins/outputfilter');
 const ResultFilter = require('./mixins/resultfilter');
 const mock = require('./__mocktask__');
 
 
-class Task extends mixins(Catchable, Runner, InputFilter, OutputFilter, ResultFilter, State) {
+class Task extends mixins(Catch, Runner, InputFilter, OutputFilter, ResultFilter, State) {
 
     static create(name, spec, factory) {
-        const { Resource, TimeoutSeconds = 60, HeartbeatSeconds, Retry = [], Catch = [], Next, End } = spec;
+        const { Resource, TimeoutSeconds = 60, HeartbeatSeconds, Next, End } = spec;
 
         const task = new Task(name, spec);
         task.resource = Resource;
         task.timeoutSeconds = TimeoutSeconds;
         task.heartbeatSeconds = HeartbeatSeconds;
-        // task.retry = Retry;
-        task.catchers = Catchable.createCatchers(name, spec, factory);
+
+        // Initialize the Retryable mixin property.
+        // task.retry = Retry.createReriers(name, spec, factory);
+
+        // Initialize the Catch mixin property
+        task.catchers = Catch.createCatchers(name, spec, factory);
+
+        // Initialize the Runner mixin properties.
         task.next = factory.build(Next);
         task.end = End;
+
         return task;
     }
 

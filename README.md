@@ -21,6 +21,20 @@ implementation could be provided by the author. (I like this one, personally.)
 
 See additional [notes below](#notes).
 
+
+## Experimental
+All new work is going in `/experimental` as I thought using mixins would make
+things more reasonable. One caveat to this is when one needs to initialize
+properties that result in a state type getting created. For example, `Task`
+states have "Catchers" that are linked to subsequent states (via `Next`).
+Because there is a common shared factory (factory.js) to generate states, that
+factory needs to be passed into state factory functions, but it isn't passed
+into State constructors. Due to that, anything internal properties that a mixin
+needs to be initialized will have to be initialized in the implementing State's
+factory function (`create`). It may not be a problem , but it's not overly obvious
+when creating new States and adding mixins.
+
+
 ## Basic API
 ```js
 const json = {

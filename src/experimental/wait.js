@@ -16,8 +16,11 @@ class Wait extends mixins(Runner, InputFilter, OutputFilter, State) {
         wait.secondsPath = SecondsPath;
         wait.timestamp = Timestamp;
         wait.timestampPath = TimestampPath;
+
+        // Initialize the Runner mixin properties.
         wait.next = factory.build(Next);
         wait.end = End;
+        
         return wait;
     }
 

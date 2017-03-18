@@ -9,14 +9,16 @@ class Catcher extends mixins(Runner) {
 
         const catcher = new Catcher(name, spec);
         catcher.errorEquals = ErrorEquals;
+
+        // Initialize the Runner mixin property.
         catcher.next = factory.build(Next);
+
         return catcher;
     }
 
     constructor(name, spec) {
         super(name, spec);
         this.errorEquals = undefined;
-        this.next = undefined;
     }
 
     match({ Error }) {
@@ -33,9 +35,9 @@ class Catcher extends mixins(Runner) {
 
 }
 
-function Catchable(Base) {
+function Catch(Base) {
 
-    return class Catchable extends Base {
+    return class Catch extends Base {
 
         constructor(name, spec) {
             super(name, spec)
@@ -78,8 +80,8 @@ function Catchable(Base) {
 
 }
 
-Catchable.createCatchers = function (name, { Catch = [] }, factory) {
+Catch.createCatchers = function (name, { Catch = [] }, factory) {
     return Catch.map((catcher, index) => Catcher.create(`${name}_Catcher_${index}`, catcher, factory));
 };
 
-module.exports = Catchable;
+module.exports = Catch;

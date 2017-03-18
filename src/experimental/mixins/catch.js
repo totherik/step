@@ -26,7 +26,7 @@ class Catcher extends mixins(Runner) {
     }
 
     isWildcard() {
-        return this.errorEquals.length === 1 && this.errorEquals[0] === 'States.ALL'
+        return this.errorEquals.length === 1 && this.errorEquals[0] === 'States.ALL';
     }
 
     run(input) {
@@ -80,8 +80,10 @@ function Catch(Base) {
 
 }
 
+
 Catch.createCatchers = function (name, { Catch = [] }, factory) {
     return Catch.map((catcher, index) => Catcher.create(`${name}_Catcher_${index}`, catcher, factory));
 };
+
 
 module.exports = Catch;

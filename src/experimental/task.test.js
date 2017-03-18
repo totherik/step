@@ -276,3 +276,40 @@ test('Catch', t => {
     });
 
 });
+
+
+test('Retry', t => {
+
+    const json = {
+        StartAt: 'Error',
+        States: {
+            Error: {
+                Type: 'Task',
+                Resource: 'test',
+                TimeoutSeconds: 1,
+                Retry: [
+                    {
+                        ErrorEquals: [ 'States.Timeout'],
+                    },
+                    {
+                        ErrorEquals: [ 'States.ALL' ],
+                        MaxAttempts: 0,
+                    }
+                ],
+                End: true,
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = {
+        SleepSeconds: [ 2, 2, 2, 2 ],
+    };
+
+    return t.throws(machine.run(input)).then(error => {
+        const { Error, Cause } = error;
+        t.is(Error, 'States.Timeout');
+        t.is(Cause, 'Request timeout.');
+    });
+
+});

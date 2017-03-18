@@ -17,6 +17,13 @@ class Retrier {
         return this.errorEquals.length === 1 && this.errorEquals[0] === 'States.ALL';
     }
 
+    canContinue(attempts) {
+        return attempts <= this.maxAttempts;
+    }
+
+    getDelay(attempts) {
+        return this.intervalSeconds + (attempts * this.backoffRate);
+    }
 }
 
 
@@ -30,34 +37,29 @@ function Retry(Base) {
         }
 
         run(input) {
-            const attempts = new Map();
+            const counts = new WeakMap();
 
             const retry = output => {
-
                 const retrier = this.match(output);
                 if (!retrier) {
                     return Promise.reject(output);
                 }
 
-                let retries = attempts.get(retrier);
-                if (typeof retries !== 'number') {
-                    retries = 1;
-                    attempts.set(retrier, retries);
-                }
-
-                if (retries === retrier.maxAttempts) {
+                let attempts = counts.get(retrier) || 1;
+                if (!retrier.canContinue(attempts)) {
                     return Promise.reject(output);
                 }
 
-                retries += 1;
-                attempts.set(retrier, retries);
+                counts.set(retrier, attempts + 1);
 
-                const { intervalSeconds, backoffRate } = retrier;
-                const delay = (intervalSeconds + (retries * backoffRate)) * 1000;
+                const seconds = retrier.getDelay(attempts - 1);
+                return wait(input, seconds).then(run);
+            };
 
-                return new Promise((resolve) => {
-                    setTimeout(resolve, delay, input);
-                }).then(run);
+            const wait = (value, seconds) => {
+                return new Promise(resolve => {
+                    setTimeout(resolve, seconds * 1000, value);
+                });
             };
 
             const run = input => {
@@ -69,7 +71,6 @@ function Retry(Base) {
 
         match(error) {
             return this.retriers.find((retrier, index, retriers) => {
-
                 if (retrier.match(error)) {
                     return true;
                 }

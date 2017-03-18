@@ -15,6 +15,7 @@ function getInput(seconds = 3) {
 
 test('Wait (Default)', t => {
 
+    const then = Date.now();
     const input = getInput();
 
     const json = {
@@ -31,9 +32,8 @@ test('Wait (Default)', t => {
     // This is an arbitrary number just to say that it ran without delay.
     // May cause false-negatives on very very slow machines?
     const limit = 100;
-    const then = Date.now();
-
     const machine = Machine.create(json);
+
     return machine.run(input).then(result => {
         const now = Date.now();
         const duration = now - then;
@@ -45,6 +45,7 @@ test('Wait (Default)', t => {
 
 test('Wait (Seconds)', t => {
 
+    const then = Date.now();
     const input = getInput();
 
     const json = {
@@ -59,9 +60,8 @@ test('Wait (Seconds)', t => {
     };
 
     const limit = json.States.One.Seconds * 1000;
-    const then = Date.now();
-
     const machine = Machine.create(json);
+
     return machine.run(input).then(result => {
         const now = Date.now();
         const duration = now - then;
@@ -73,6 +73,7 @@ test('Wait (Seconds)', t => {
 
 test('Wait (SecondsPath)', t => {
 
+    const then = Date.now();
     const input = getInput();
 
     const json = {
@@ -87,9 +88,8 @@ test('Wait (SecondsPath)', t => {
     };
 
     const limit = input.seconds * 1000;
-    const then = Date.now();
-
     const machine = Machine.create(json);
+
     return machine.run(input).then(result => {
         const now = Date.now();
         const duration = now - then;
@@ -101,6 +101,7 @@ test('Wait (SecondsPath)', t => {
 
 test('Wait (Timestamp)', t => {
 
+    const then = Date.now();
     const input = getInput();
 
     const json = {
@@ -115,9 +116,8 @@ test('Wait (Timestamp)', t => {
     };
 
     const limit = input.seconds * 1000;
-    const then = Date.now();
-
     const machine = Machine.create(json);
+
     return machine.run(input).then(result => {
         const now = Date.now();
         const duration = now - then;
@@ -129,6 +129,7 @@ test('Wait (Timestamp)', t => {
 
 test('Wait (TimestampPath)', t => {
 
+    const then = Date.now();
     const input = getInput();
 
     const json = {
@@ -143,9 +144,8 @@ test('Wait (TimestampPath)', t => {
     };
 
     const limit = input.seconds * 1000;
-    const then = Date.now();
-
     const machine = Machine.create(json);
+    
     return machine.run(input).then(result => {
         const now = Date.now();
         const duration = now - then;

@@ -35,6 +35,7 @@ class Catcher extends mixins(Runner) {
 
 }
 
+
 function Catch(Base) {
 
     return class Catch extends Base {

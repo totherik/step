@@ -24,6 +24,7 @@ class Retrier {
     getDelay(attempts) {
         return this.intervalSeconds + (attempts * this.backoffRate);
     }
+    
 }
 
 

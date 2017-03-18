@@ -16,7 +16,6 @@ class Machine {
         machine.comment = Comment;
         machine.timeoutSeconds = TimeoutSeconds;
         return machine;
-
     }
 
     constructor() {

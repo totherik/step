@@ -7,7 +7,7 @@ function ResultFilter(Base) {
 
         constructor(name, spec) {
             super(name, spec);
-            this.resultPath = spec.resultPath;
+            this.resultPath = spec.ResultPath;
         }
 
         run(input) {

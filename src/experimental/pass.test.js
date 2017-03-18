@@ -50,6 +50,60 @@ test('Result', t => {
 });
 
 
+test('ResultPath (existing property)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Pass',
+                Result: {
+                    bar: 'foo',
+                },
+                ResultPath: '$.target',
+                End: true,
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: 'bar', target: 'target' };
+
+    return machine.run(input).then(output => {
+        t.is(output.foo, 'bar');
+        t.deepEqual(output.target, json.States.One.Result);
+    });
+
+});
+
+
+test('ResultPath (new property)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Pass',
+                Result: {
+                    bar: 'foo',
+                },
+                ResultPath: '$.target',
+                End: true,
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: 'bar' };
+
+    return machine.run(input).then(output => {
+        t.is(output.foo, 'bar');
+        t.deepEqual(output.target, json.States.One.Result);
+    });
+
+});
+
+
 test('InputPath', t => {
 
     const json = {

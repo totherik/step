@@ -11,7 +11,8 @@ function OutputFilter(Base) {
         }
 
         run(input) {
-            return super.run(input).then(output => this.filterOutput(output));
+            return super.run(input)
+                .then(output => this.filterOutput(output));
         }
 
         filterOutput(output) {

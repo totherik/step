@@ -28,7 +28,6 @@ test('Wait (Default)', t => {
         },
     };
 
-
     // This is an arbitrary number just to say that it ran without delay.
     // May cause false-negatives on very very slow machines?
     const limit = 100;
@@ -145,7 +144,7 @@ test('Wait (TimestampPath)', t => {
 
     const limit = input.seconds * 1000;
     const machine = Machine.create(json);
-    
+
     return machine.run(input).then(result => {
         const now = Date.now();
         const duration = now - then;

@@ -26,8 +26,9 @@ test('Factory', t => {
     };
 
     const factory = Factory.create(json.States);
-    const machine = factory.build(json.StartAt);
-    return machine.run({ a: 'foo' }).then(output => {
+    const state = factory.build(json.StartAt);
+
+    return state.run({ a: 'foo' }).then(output => {
         t.is(output.a, 'foo');
     });
 
@@ -48,9 +49,9 @@ test('Fail', t => {
     };
 
     const factory = Factory.create(json.States);
-    const machine = factory.build(json.StartAt);
-    const p = machine.run({});
-    return t.throws(p).catch(({ Error, Cause }) => {
+    const state = factory.build(json.StartAt);
+
+    return t.throws(state.run({})).catch(({ Error, Cause }) => {
         t.is(Error, 'An error.');
         t.is(Cause, 'A cause.');
     });
@@ -79,19 +80,19 @@ test('Task', t => {
     };
 
     const factory = Factory.create(json.States);
-    const machine = factory.build(json.StartAt);
+    const state = factory.build(json.StartAt);
 
-    let state = machine;
-    t.is(state.name, 'One');
-    t.is(state.type, 'Task');
-    t.is(state.catchers.length, 1);
-    t.is(state.catchers[0].next, machine.next);
+    let current = state;
+    t.is(current.name, 'One');
+    t.is(current.type, 'Task');
+    t.is(current.catchers.length, 1);
+    t.is(current.catchers[0].next, state.next);
 
-    state = machine.next;
-    t.is(state.name, 'Two');
-    t.is(state.type, 'Succeed');
+    current = state.next;
+    t.is(current.name, 'Two');
+    t.is(current.type, 'Succeed');
 
-    return machine.run({}).then(result => {
+    return state.run({}).then(result => {
         t.truthy(result);
     });
 
@@ -124,21 +125,21 @@ test('Catch', t => {
     };
 
     const factory = Factory.create(json.States);
-    const machine = factory.build(json.StartAt);
+    const state = factory.build(json.StartAt);
 
-    let state = machine;
-    t.is(state.name, 'One');
-    t.is(state.type, 'Task');
-    t.is(state.catchers.length, 1);
+    let current = state;
+    t.is(current.name, 'One');
+    t.is(current.type, 'Task');
+    t.is(current.catchers.length, 1);
 
-    state = machine.catchers[0].next
-    t.is(state.name, 'Three');
+    current = state.catchers[0].next
+    t.is(current.name, 'Three');
 
-    state = machine.next;
-    t.is(state.name, 'Two');
-    t.is(state.type, 'Succeed');
+    current = state.next;
+    t.is(current.name, 'Two');
+    t.is(current.type, 'Succeed');
 
-    const promise = machine.run({ SleepSeconds: [ 2 ] });
+    const promise = state.run({ SleepSeconds: [ 2 ] });
     return t.throws(promise).catch(({ Error, Cause }) => {
         t.is(Error, 'States.Timeout');
         t.is(Cause, 'Request timeout.');

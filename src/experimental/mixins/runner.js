@@ -6,7 +6,7 @@ function Runner(Base) {
 
         constructor(name, spec) {
             super(name, spec);
-            this.next = null;
+            this.next = undefined;
             this.end = false;
         }
 

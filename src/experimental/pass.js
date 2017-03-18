@@ -10,7 +10,7 @@ class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State
 
     static create(name, spec, factory) {
         const { Result, Next, End = false } = spec;
-        
+
         const pass = new Pass(name, spec);
         pass.result = Result;
         pass.next = factory.build(Next);
@@ -24,7 +24,6 @@ class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State
     }
 
     _run(input) {
-        console.log('Pass');
         const { result = input } = this;
         return result;
     }

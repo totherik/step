@@ -37,7 +37,6 @@ class Task extends mixins(Catch, Retry, Runner, InputFilter, OutputFilter, Resul
         this.resource = undefined;
         this.timeoutSeconds = undefined;
         this.heartbeatSeconds = undefined;
-        // this.retry = undefined;
     }
 
     _run(input) {

@@ -3,6 +3,7 @@ const Task = require('./task');
 const Wait = require('./wait');
 const Fail = require('./fail');
 const Succeed = require('./succeed');
+const Parallel = require('./parallel');
 
 
 const StateTypes = new Map([
@@ -12,7 +13,7 @@ const StateTypes = new Map([
     [ 'Wait', Wait ],
     [ 'Succeed', Succeed ],
     [ 'Fail', Fail ],
-    // [ 'Parallel', Parallel ],
+    [ 'Parallel', Parallel ],
 ]);
 
 

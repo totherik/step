@@ -14,7 +14,7 @@ class Succeed extends mixins(InputFilter, OutputFilter, State) {
         super(name, spec);
     }
 
-    run(input) {
+    _run(input) {
         return Promise.resolve(input);
     }
 

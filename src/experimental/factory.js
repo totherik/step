@@ -2,6 +2,7 @@ const Pass = require('./pass');
 const Task = require('./task');
 const Wait = require('./wait');
 const Fail = require('./fail');
+const Choice = require('./choice');
 const Succeed = require('./succeed');
 const Parallel = require('./parallel');
 
@@ -9,7 +10,7 @@ const Parallel = require('./parallel');
 const StateTypes = new Map([
     [ 'Pass', Pass ],
     [ 'Task', Task ],
-    // [ 'Choice', Choice ],
+    [ 'Choice', Choice ],
     [ 'Wait', Wait ],
     [ 'Succeed', Succeed ],
     [ 'Fail', Fail ],

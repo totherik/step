@@ -18,7 +18,7 @@ class ChoiceRule {
 
     constructor(name) {
         this.name = name;
-        this.impl = undefined;
+        this.impl = () => false;
     }
 
     satisfiedBy(input) {

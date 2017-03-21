@@ -5,15 +5,11 @@ function InputFilter(Base) {
 
     return class InputFilter extends Base {
 
-        constructor(name, spec) {
-            super(name, spec);
-            this.inputPath = spec.InputPath;
-        }
+        constructor(name, spec, factory) {
+            super(name, spec, factory);
 
-        run(input) {
-            return Promise.resolve(input)
-                .then(input => this.filterInput(input))
-                .then(input => super.run(input));
+            const { InputPath } = spec;
+            this.inputPath = InputPath;
         }
 
         filterInput(input) {

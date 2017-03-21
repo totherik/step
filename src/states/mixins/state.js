@@ -4,19 +4,13 @@ function State(Base) {
 
     return class State extends Base {
 
-        constructor(name, { Type, Comment }) {
-            super();
+        constructor(name, spec, factory) {
+            super(name, spec, factory);
+
+            const { Type, Comment } = spec;
             this.name = name;
             this.type = Type;
             this.comment = Comment;
-        }
-
-        run(input) {
-            return this._run(input);
-        }
-
-        _run(input) {
-            return Promise.resolve(input);
         }
 
     };

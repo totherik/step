@@ -24,7 +24,7 @@ class Retrier {
     getDelay(attempts) {
         return this.intervalSeconds + (attempts * this.backoffRate);
     }
-    
+
 }
 
 
@@ -32,16 +32,18 @@ function Retry(Base) {
 
     return class Retry extends Base {
 
-        constructor(name, spec) {
-            super(name, spec);
-            this.retriers = [];
+        constructor(name, spec, factory) {
+            super(name, spec, factory);
+
+            const { Retry = [] } = spec;
+            this.retriers = Retry.map(spec => new Retrier(spec));
         }
 
-        run(input) {
+        retry(fn, input) {
             const counts = new WeakMap();
 
             const retry = output => {
-                const retrier = this.match(output);
+                const retrier = this._match(output);
                 if (!retrier) {
                     return Promise.reject(output);
                 }
@@ -64,13 +66,13 @@ function Retry(Base) {
             };
 
             const run = input => {
-                return super.run(input).catch(retry);
+                return fn(input).catch(retry);
             };
 
             return run(input);
         }
 
-        match(error) {
+        _match(error) {
             return this.retriers.find((retrier, index, retriers) => {
                 if (retrier.match(error)) {
                     return true;
@@ -95,11 +97,6 @@ function Retry(Base) {
     }
 
 }
-
-
-Retry.createRetriers = function(name, { Retry = [] }, factory) {
-    return Retry.map(spec => new Retrier(spec));
-};
 
 
 module.exports = Retry;

@@ -8,29 +8,31 @@ const ResultFilter = require('./mixins/resultfilter');
 
 class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State) {
 
-    static create(name, spec, factory) {
-        const { Result, Next, End = false } = spec;
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
 
-        const pass = new Pass(name, spec);
-        pass.result = Result;
-
-        // Initialize the Runner mixin properties.
-        pass.next = factory.build(Next);
-        pass.end = End;
-
-        return pass;
+        const { Result } = spec;
+        this.result = Result;
     }
 
-    constructor(name, spec) {
-        super(name, spec);
-        this.result = undefined;
+
+    run(input) {
+        input = this.filterInput(input);
+
+        return super.run(input)
+            .then(result => {
+                let output;
+                output = this.filterResult(input, result);
+                output = this.filterOutput(output);
+                return this.continue(output);
+            });
     }
 
     _run(input) {
         const { result = input } = this;
         return Promise.resolve(result);
     }
-    
+
 }
 
 

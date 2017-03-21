@@ -4,18 +4,24 @@ function Runner(Base) {
 
     return class Runner extends Base {
 
-        constructor(name, spec) {
-            super(name, spec);
-            this.next = undefined;
-            this.end = false;
+        constructor(name, spec, factory) {
+            super(name, spec, factory);
+
+            const { Next, End = false } = spec;
+            this.next = factory.build(Next);
+            this.end = End;
         }
 
-        run(input) {
-            const result = super.run(input);
+        continue(input) {
             if (this.next) {
-                return result.then(output => this.next.run(output));
+                return this.next.run(input);
             }
-            return result;
+
+            if (this.end) {
+                return Promise.resolve(input);
+            }
+
+            return Promise.reject({ Error: `Invalid terminal state '${name}'.`})
         }
 
     };

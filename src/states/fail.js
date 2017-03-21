@@ -4,19 +4,12 @@ const mixins = require('./mixins/mixins');
 
 class Fail extends mixins(State) {
 
-    static create(name, spec/*, factory*/) {
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
+
         const { Error, Cause } = spec;
-
-        const fail = new Fail(name, spec);
-        fail.error = Error;
-        fail.cause = Cause;
-        return fail;
-    }
-
-    constructor(name, spec) {
-        super(name, spec);
-        this.error = undefined;
-        this.cause = undefined;
+        this.error = Error;
+        this.cause = Cause;
     }
 
     _run(input) {

@@ -8,28 +8,24 @@ const OutputFilter = require('./mixins/outputfilter');
 
 class Wait extends mixins(Runner, InputFilter, OutputFilter, State) {
 
-    static create(name, spec, factory) {
-        const { Seconds, SecondsPath, Timestamp, TimestampPath, Next, End = false } = spec;
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
 
-        const wait = new Wait(name, spec);
-        wait.seconds = Seconds;
-        wait.secondsPath = SecondsPath;
-        wait.timestamp = Timestamp;
-        wait.timestampPath = TimestampPath;
-
-        // Initialize the Runner mixin properties.
-        wait.next = factory.build(Next);
-        wait.end = End;
-
-        return wait;
+        const { Seconds, SecondsPath, Timestamp, TimestampPath } = spec;
+        this.seconds = Seconds;
+        this.secondsPath = SecondsPath;
+        this.timestamp = Timestamp;
+        this.timestampPath = TimestampPath;
     }
 
-    constructor(name, spec) {
-        super(name, spec);
-        this.seconds = undefined;
-        this.secondsPath = undefined;
-        this.timestamp = undefined;
-        this.timestampPath = undefined;
+    run(input) {
+        input = this.filterInput(input);
+
+        return super.run(input)
+            .then(result => {
+                const output = this.filterOutput(result);
+                return this.continue(output);
+            });
     }
 
     _run(input) {

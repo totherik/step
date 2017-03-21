@@ -12,34 +12,25 @@ const mock = require('./__mocktask__');
 
 class Task extends mixins(Timeout, Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter, State) {
 
-    static create(name, spec, factory) {
-        const { Resource, TimeoutSeconds = 60, HeartbeatSeconds, Next, End } = spec;
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
 
-        const task = new Task(name, spec);
-        task.resource = Resource;
-
-        // Initialize the Timeout mixin property.
-        task.timeoutSeconds = TimeoutSeconds;
-        task.heartbeatSeconds = HeartbeatSeconds;
-
-        // Initialize the Retryable mixin property.
-        task.retriers = Retry.createRetriers(name, spec, factory);
-
-        // Initialize the Catch mixin property
-        task.catchers = Catch.createCatchers(name, spec, factory);
-
-        // Initialize the Runner mixin properties.
-        task.next = factory.build(Next);
-        task.end = End;
-
-        return task;
+        const { Resource, HeartbeatSeconds } = spec;
+        this.resource = Resource;
+        this.heartbeatSeconds = HeartbeatSeconds;
     }
 
-    constructor(name, spec) {
-        super(name, spec);
-        this.resource = undefined;
-        // this.timeoutSeconds = undefined;
-        // this.heartbeatSeconds = undefined;
+    run(input) {
+        input = this.filterInput(input);
+
+        return this.retry(input => super.run(input), input)
+            .then(result => {
+                let output;
+                output = this.filterResult(input, result);
+                output = this.filterOutput(output);
+                return this.continue(output);
+            })
+            .catch(error => this.catch(error));
     }
 
     _run(input) {

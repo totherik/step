@@ -5,14 +5,11 @@ function ResultFilter(Base) {
 
     return class ResultFilter extends Base {
 
-        constructor(name, spec) {
-            super(name, spec);
-            this.resultPath = spec.ResultPath;
-        }
+        constructor(name, spec, factory) {
+            super(name, spec, factory);
 
-        run(input) {
-            return super.run(input)
-                .then(result => this.filterResult(input, result));
+            const { ResultPath } = spec;
+            this.resultPath = ResultPath;
         }
 
         filterResult(input, result) {

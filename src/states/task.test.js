@@ -270,7 +270,8 @@ test('Catch', t => {
         SleepSeconds: [ 2 ]
     };
 
-    return t.throws(machine.run(input)).then(({ Error, Cause }) => {
+    return t.throws(machine.run(input)).then(output => {
+        const { Error, Cause } = output;
         t.is(Error, 'Broken');
         t.is(Cause, 'Unknown');
     });

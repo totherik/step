@@ -6,16 +6,13 @@ const OutputFilter = require('./mixins/outputfilter');
 
 class Succeed extends mixins(InputFilter, OutputFilter, State) {
 
-    static create(name, spec, factory) {
-        return new Succeed(name, spec);
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
     }
 
-    constructor(name, spec) {
-        super(name, spec);
-    }
-
-    _run(input) {
-        return Promise.resolve(input);
+    run(input) {
+        input = this.filterInput(input);
+        return super.run(input).then(result => this.filterOutput(result));
     }
 
 }

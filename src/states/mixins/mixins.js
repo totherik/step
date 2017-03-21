@@ -2,13 +2,16 @@
 
 function mixins(...factories) {
 
-    // They should be ordered, so to appropriately apply them, reverse them.
-    factories.reverse();
-
     let base = class Base {
+
         run(input) {
+            return this._run(input);
+        }
+
+        _run(input) {
             return Promise.resolve(input);
         }
+
     };
 
     for (const factory of factories) {

@@ -10,37 +10,29 @@ const ResultFilter = require('./mixins/resultfilter');
 
 class Parallel extends mixins(Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter, State) {
 
-    static create(name, spec, factory) {
-        const { Branches = [], Next, End } = spec;
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
 
-        const parallel = new Parallel(name, spec);
-        parallel.branches = Branches.map(({ StartAt, States }) => {
+        const { Branches = [] } = spec;
+        this.branches = Branches.map(({ StartAt, States }) => {
             // This is a bit brittle, but allows us to build subtrees
             // without a cyclical 'require' dependency.
             const Factory = factory.constructor;
             return Factory.create(States).build(StartAt);
         });
-
-        // Initialize the Retryable mixin property.
-        parallel.retriers = Retry.createRetriers(name, spec, factory);
-
-        // Initialize the Catch mixin property
-        parallel.catchers = Catch.createCatchers(name, spec, factory);
-
-        // Initialize the Runner mixin properties.
-        parallel.next = factory.build(Next);
-        parallel.end = End;
-
-        return parallel;
     }
 
-    static createBranches({ Branches = [] }) {
-        return ;
-    }
+    run(input) {
+        input = this.filterInput(input);
 
-    constructor(name, spec) {
-        super(name, spec);
-        this.branches = [];
+        return this.retry(input => super.run(input), input)
+            .then(result => {
+                let output;
+                output = this.filterResult(input, result);
+                output = this.filterOutput(output);
+                return this.continue(output);
+            })
+            .catch(error => this.catch(error));
     }
 
     _run(input) {

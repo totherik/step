@@ -2,12 +2,13 @@
 
 function Timeout(Base) {
 
-    return class Runner extends Base {
+    return class Timeout extends Base {
 
-        constructor(name, spec) {
-            super(name, spec);
-            this.timeoutSeconds = undefined;
-            this.heartbeatSeconds = undefined;
+        constructor(name, spec, factory) {
+            super(name, spec, factory);
+
+            const { TimeoutSeconds } = spec;
+            this.timeoutSeconds = TimeoutSeconds;
         }
 
         setTimeout(promise) {

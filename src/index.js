@@ -9,29 +9,22 @@ class Machine extends mixins(Timeout) {
     static create(json) {
         Schema.validate(json);
 
-        const { StartAt, States, Version, Comment, TimeoutSeconds } = json;
+        const { States } = json;
         const factory = Factory.create(States);
-
-        const machine = new Machine();
-        machine.next = factory.build(StartAt);
-        machine.version = Version;
-        machine.comment = Comment;
-
-        // Initialize the Timeout mixin properties.
-        machine.timeoutSeconds = TimeoutSeconds;
-
-        return machine;
+        return new Machine('__root__', json, factory);
     }
 
-    constructor() {
-        super();
-        this.next = undefined;
-        this.version = undefined;
-        this.comment = undefined;
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
+
+        const { StartAt, Version, Comment } = spec;
+        this.startAt = factory.build(StartAt);
+        this.version = Version;
+        this.comment = Comment;
     }
 
     run(input) {
-        const exec = this.next
+        const exec = this.startAt
             .run(input)
             .catch(error => {
                 if (error instanceof Error) {

@@ -4,21 +4,17 @@ const Runner = require('./runner');
 
 class Catcher extends mixins(Runner) {
 
-    static create(name, spec, factory) {
-        const { ErrorEquals, Next } = spec;
-
-        const catcher = new Catcher(name, spec);
-        catcher.errorEquals = ErrorEquals;
-
-        // Initialize the Runner mixin property.
-        catcher.next = factory.build(Next);
-
-        return catcher;
+    static from(name, { Catch = [] }, factory) {
+        return Catch.map((spec, index) => {
+            return new Catcher(`${name}_Catcher_${index}`, spec, factory);
+        });
     }
 
-    constructor(name, spec) {
-        super(name, spec);
-        this.errorEquals = undefined;
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
+
+        const { ErrorEquals } = spec;
+        this.errorEquals = ErrorEquals;
     }
 
     match({ Error }) {
@@ -30,7 +26,7 @@ class Catcher extends mixins(Runner) {
     }
 
     run(input) {
-        return super.run(input);
+        return this.continue(input);
     }
 
 }
@@ -40,17 +36,18 @@ function Catch(Base) {
 
     return class Catch extends Base {
 
-        constructor(name, spec) {
-            super(name, spec);
-            this.catchers = [];
-        }
-
-        run(input) {
-            return super.run(input).catch(error => this.catch(error));
+        constructor(name, spec, factory) {
+            super(name, spec, factory);
+            this.catchers = Catcher.from(name, spec, factory);
         }
 
         catch(error) {
-            const catcher = this.catchers.find((catcher, index, catchers) => {
+            const catcher = this.match(error);
+            return catcher ? catcher.run(error) : Promise.reject(error);
+        }
+
+        match(error) {
+            return this.catchers.find((catcher, index, catchers) => {
                 if (catcher.match(error)) {
                     return true;
                 }
@@ -69,22 +66,11 @@ function Catch(Base) {
 
                 return false;
             });
-
-            if (catcher) {
-                return catcher.run(error);
-            }
-
-            return Promise.reject(error);
         }
 
     }
 
 }
-
-
-Catch.createCatchers = function (name, { Catch = [] }, factory) {
-    return Catch.map((catcher, index) => Catcher.create(`${name}_Catcher_${index}`, catcher, factory));
-};
 
 
 module.exports = Catch;

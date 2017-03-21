@@ -10,10 +10,10 @@ const Parallel = require('./parallel');
 const StateTypes = new Map([
     [ 'Pass', Pass ],
     [ 'Task', Task ],
-    [ 'Choice', Choice ],
     [ 'Wait', Wait ],
-    [ 'Succeed', Succeed ],
     [ 'Fail', Fail ],
+    [ 'Choice', Choice ],
+    [ 'Succeed', Succeed ],
     [ 'Parallel', Parallel ],
 ]);
 
@@ -42,7 +42,7 @@ class Factory {
         if (states.hasOwnProperty(name)) {
             const spec = states[name];
             const State = StateTypes.get(spec.Type);
-            const state = State.create(name, spec, this);
+            const state = new State(name, spec, this);
             cache.set(name, state);
             return state;
         }

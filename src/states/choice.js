@@ -8,33 +8,28 @@ const OutputFilter = require('./mixins/outputfilter');
 
 class Choice extends mixins(InputFilter, OutputFilter, State) {
 
-    static create(name, spec, factory) {
-        const { Choices, Default } = spec;
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
 
-        const ruleset = Choices.map((spec, index) => {
+        const { Choices = [], Default } = spec;
+
+        this.choices = Choices.map((spec, index) => {
             const rule = ChoiceRule.create(`${name}_ChoiceRule_${index}`, spec);
             const next = factory.build(spec.Next);
             return [ rule, next ];
         });
 
-        const choice = new Choice(name, spec);
-        choice.choices = new Map(ruleset);
-        choice.default = factory.build(Default);
-        return choice;
-    }
-
-    constructor(name, spec) {
-        super(name, spec);
-        this.choices = [];
+        this.default = factory.build(Default);
     }
 
     run(input) {
-        // NOTE: This behavior does not rely on the Runner mixin, but instead
-        // replaces the runner behavior with Default and ChoiceRule Next
-        // values depending on the choice outcome. As a result we override
-        // `run` and leave `_run` to be default behavior.
-        const next = this.choose(input);
-        return super.run(input).then(output => next.run(output));
+        input = this.filterInput(input);
+
+        return super.run(input)
+            .then(result => {
+                const output = this.filterOutput(result);
+                return this.choose(input).run(output);
+            });
     }
 
     choose(input) {
@@ -53,7 +48,7 @@ class Choice extends mixins(InputFilter, OutputFilter, State) {
             Cause: `All Choices failed for State "${this.name}" and no Default specified.`
         };
 
-        return Fail.create(`${this.name}_Fail`, spec);
+        return new Fail(`${this.name}_Fail`, spec);
     }
 
 }

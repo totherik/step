@@ -31,13 +31,10 @@ class Choice extends mixins(InputFilter, OutputFilter, State) {
     run(input) {
         // NOTE: This behavior does not rely on the Runner mixin, but instead
         // replaces the runner behavior with Default and ChoiceRule Next
-        // values depending on the choice outcome.
+        // values depending on the choice outcome. As a result we override
+        // `run` and leave `_run` to be default behavior.
         const next = this.choose(input);
         return super.run(input).then(output => next.run(output));
-    }
-
-    _run(input) {
-        return input;
     }
 
     choose(input) {

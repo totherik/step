@@ -12,12 +12,11 @@ function State(Base) {
         }
 
         run(input) {
-            return Promise.resolve(input)
-                .then(input => this._run(input));
+            return this._run(input);
         }
 
         _run(input) {
-            return input;
+            return Promise.resolve(input);
         }
 
     };

@@ -17,7 +17,7 @@ class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State
         // Initialize the Runner mixin properties.
         pass.next = factory.build(Next);
         pass.end = End;
-        
+
         return pass;
     }
 
@@ -28,7 +28,7 @@ class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State
 
     _run(input) {
         const { result = input } = this;
-        return result;
+        return Promise.resolve(result);
     }
 }
 

@@ -1,5 +1,5 @@
 const State = require('./mixins/state');
-const PathUtils = require('./pathutils');
+const PathUtils = require('../pathutils');
 const mixins = require('./mixins/mixins');
 const Runner = require('./mixins/runner');
 const InputFilter = require('./mixins/inputfilter');

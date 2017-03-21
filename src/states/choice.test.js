@@ -1,5 +1,5 @@
 const test = require('ava');
-const Machine = require('./index');
+const Machine = require('../index');
 
 
 test('Choice (StringEquals)', t => {

@@ -13,7 +13,7 @@ function Runner(Base) {
         run(input) {
             const result = super.run(input);
             if (this.next) {
-                return result.then(output => this.next.run(output))
+                return result.then(output => this.next.run(output));
             }
             return result;
         }

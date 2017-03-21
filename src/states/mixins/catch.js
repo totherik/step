@@ -41,7 +41,7 @@ function Catch(Base) {
     return class Catch extends Base {
 
         constructor(name, spec) {
-            super(name, spec)
+            super(name, spec);
             this.catchers = [];
         }
 

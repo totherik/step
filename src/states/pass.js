@@ -30,6 +30,7 @@ class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State
         const { result = input } = this;
         return Promise.resolve(result);
     }
+    
 }
 
 

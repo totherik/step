@@ -309,7 +309,6 @@ test('Retry', t => {
     return t.throws(machine.run(input)).then(error => {
         const { Error, Cause } = error;
         t.is(Error, 'States.Timeout');
-        t.is(Cause, 'Request timeout.');
     });
 
 });

@@ -1,8 +1,10 @@
 const Schema = require('./schema');
 const Factory = require('./states/factory');
+const mixins = require('./states/mixins/mixins');
+const Timeout = require('./states/mixins/timeout');
 
 
-class Machine {
+class Machine extends mixins(Timeout) {
 
     static create(json) {
         Schema.validate(json);
@@ -14,15 +16,18 @@ class Machine {
         machine.next = factory.build(StartAt);
         machine.version = Version;
         machine.comment = Comment;
+
+        // Initialize the Timeout mixin properties.
         machine.timeoutSeconds = TimeoutSeconds;
+
         return machine;
     }
 
     constructor() {
+        super();
         this.next = undefined;
         this.version = undefined;
         this.comment = undefined;
-        this.timeoutSeconds = undefined;
     }
 
     run(input) {
@@ -42,32 +47,7 @@ class Machine {
                 return Promise.reject(error);
             });
 
-        return this.setTimeout(exec, this.timeoutSeconds);
-    }
-
-    setTimeout(promise) {
-        const { timeoutSeconds } = this;
-
-        if (isNaN(timeoutSeconds)) {
-            return promise;
-        }
-
-        return new Promise((resolve, reject) => {
-
-            // Once a promise is settled, additional calls to resolve/reject are a noop.
-            const timer = setTimeout(reject, timeoutSeconds * 1000, { Error: 'States.Timeout' });
-
-            promise
-                .then((result) => {
-                    clearTimeout(timer);
-                    resolve(result);
-                })
-                .catch(error => {
-                    clearTimeout(timer);
-                    reject(error);
-                });
-
-        });
+        return this.setTimeout(exec);
     }
 
 }

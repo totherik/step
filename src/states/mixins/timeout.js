@@ -7,10 +7,7 @@ function Timeout(Base) {
         constructor(name, spec) {
             super(name, spec);
             this.timeoutSeconds = undefined;
-        }
-
-        run(input) {
-            return this.setTimeout(super.run(input));
+            this.heartbeatSeconds = undefined;
         }
 
         setTimeout(promise) {

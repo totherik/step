@@ -3,19 +3,22 @@ const Catch = require('./mixins/catch');
 const Retry = require('./mixins/retry');
 const mixins = require('./mixins/mixins');
 const Runner = require('./mixins/runner');
+const Timeout = require('./mixins/timeout');
 const InputFilter = require('./mixins/inputfilter');
 const OutputFilter = require('./mixins/outputfilter');
 const ResultFilter = require('./mixins/resultfilter');
 const mock = require('./__mocktask__');
 
 
-class Task extends mixins(Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter, State) {
+class Task extends mixins(Timeout, Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter, State) {
 
     static create(name, spec, factory) {
         const { Resource, TimeoutSeconds = 60, HeartbeatSeconds, Next, End } = spec;
 
         const task = new Task(name, spec);
         task.resource = Resource;
+
+        // Initialize the Timeout mixin property.
         task.timeoutSeconds = TimeoutSeconds;
         task.heartbeatSeconds = HeartbeatSeconds;
 
@@ -35,13 +38,14 @@ class Task extends mixins(Catch, Retry, Runner, InputFilter, OutputFilter, Resul
     constructor(name, spec) {
         super(name, spec);
         this.resource = undefined;
-        this.timeoutSeconds = undefined;
-        this.heartbeatSeconds = undefined;
+        // this.timeoutSeconds = undefined;
+        // this.heartbeatSeconds = undefined;
     }
 
     _run(input) {
         const task = mock(this);
-        return task(input);
+        const exec = task(input);
+        return this.setTimeout(exec);
     }
 
 }

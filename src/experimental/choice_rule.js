@@ -1,4 +1,4 @@
-const PathUtils = require('../pathutils');
+const operators = require('./choice_operators');
 
 
 class ChoiceRule {
@@ -28,62 +28,6 @@ class ChoiceRule {
 }
 
 
-function typeOf(type) {
-    return function (value) {
-        return typeof value === type;
-    };
-}
-
-function eq(b) {
-    return function (a) {
-        return a === b;
-    };
-}
-
-function gt(b) {
-    return function (a) {
-        return a > b;
-    };
-}
-
-function gte(b) {
-    return function (a) {
-        return a >= b;
-    };
-}
-
-function lt(b) {
-    return function (a) {
-        return a < b;
-    };
-}
-
-function lte(b) {
-    return function (a) {
-        return a <= b;
-    };
-}
-
-function op(operator, type, assertion) {
-    return function (name, { Variable = '$', [operator]: expected }) {
-        const test = assertion(expected);
-        return function (input) {
-            const actual = PathUtils.query(input, Variable);
-            return (typeof actual === type) && test(actual);
-        };
-    };
-}
-
-
-const operators = [
-    [ 'StringEquals', 'string', eq ],
-    [ 'StringLessThan', 'string', lt ],
-    [ 'StringGreaterThan', 'string', gt ],
-    [ 'StringLessThanEquals', 'string', lte ],
-    [ 'StringGreaterThanEquals', 'string', gte ],
-].map(([ name, ...args ]) => [ name, op(name, ...args) ]);
-
-
 const ChoiceOperators = new Map([
     [
         'And',
@@ -98,7 +42,7 @@ const ChoiceOperators = new Map([
         'Or',
         function (name, { Or }) {
             const rules = Or.map((rule, index) => ChoiceRule.create(`${name}_Or_${index}`, rule));
-            return function And(input) {
+            return function Or(input) {
                 return rules.some(rule => rule.satisfiedBy(input));
             };
         }

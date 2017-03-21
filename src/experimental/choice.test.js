@@ -203,6 +203,445 @@ test('Choice (StringGreaterThanEquals)', t => {
 });
 
 
+test('Choice (NumericEquals)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        Variable: '$.foo',
+                        NumericEquals: 42,
+                        Next: 'Two',
+                    }
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number does not match.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: 42 };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (NumericLessThan)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        Variable: '$.foo',
+                        NumericLessThan: 42,
+                        Next: 'Two',
+                    }
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number is not less.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: 41 };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (NumericGreaterThan)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        Variable: '$.foo',
+                        NumericGreaterThan: 42,
+                        Next: 'Two',
+                    }
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number is not greater.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: 43 };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (NumericLessThanEquals)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        And: [
+                            {
+                                Variable: '$.foo',
+                                NumericLessThanEquals: 42,
+                            },
+                            {
+                                Variable: '$.foo',
+                                NumericLessThanEquals: 43,
+                            },
+                        ],
+                        Next: 'Two',
+                    },
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number is not less than or equal.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: 42 };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (NumericGreaterThanEquals)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        And: [
+                            {
+                                Variable: '$.foo',
+                                NumericGreaterThanEquals: 41,
+                            },
+                            {
+                                Variable: '$.foo',
+                                NumericGreaterThanEquals: 42,
+                            },
+                        ],
+                        Next: 'Two',
+                    },
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number is not greater.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: 42 };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (BooleanEquals)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        Variable: '$.foo',
+                        BooleanEquals: true,
+                        Next: 'Two',
+                    }
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number does not match.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: true };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (TimestampEquals)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        Variable: '$.foo',
+                        TimestampEquals: '2017-03-21T17:22:46.707Z',
+                        Next: 'Two',
+                    }
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number does not match.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: '2017-03-21T17:22:46.707Z' };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (TimestampLessThan)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        Variable: '$.foo',
+                        TimestampLessThan: '2017-03-21T17:22:46.707Z',
+                        Next: 'Two',
+                    }
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number is not less.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: '2017-03-21T00:00:00.000Z' };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (TimestampGreaterThan)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        Variable: '$.foo',
+                        TimestampGreaterThan: '2017-03-21T17:22:46.707Z',
+                        Next: 'Two',
+                    }
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number is not greater.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: '2017-03-21T18:00:00.000Z' };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (TimestampLessThanEquals)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        And: [
+                            {
+                                Variable: '$.foo',
+                                TimestampLessThanEquals: '2017-03-21T00:00:00.000Z',
+                            },
+                            {
+                                Variable: '$.foo',
+                                TimestampLessThanEquals: '2017-03-21T17:22:46.707Z',
+                            },
+                        ],
+                        Next: 'Two',
+                    },
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number is not less than or equal.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: '2017-03-21T00:00:00.000Z' };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (TimestampGreaterThanEquals)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        And: [
+                            {
+                                Variable: '$.foo',
+                                TimestampGreaterThanEquals: '2017-03-21T18:00:00.000Z',
+                            },
+                            {
+                                Variable: '$.foo',
+                                TimestampGreaterThanEquals: '2017-03-21T17:22:46.707Z',
+                            },
+                        ],
+                        Next: 'Two',
+                    },
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'Number is not greater.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: '2017-03-21T18:00:00.000Z' };
+
+    return machine.run(input).then(output => {
+        t.deepEqual(output, input);
+    });
+
+});
+
+
 test('Choice (And)', t => {
 
     const json = {
@@ -332,6 +771,45 @@ test('Choice (Not)', t => {
 
     return machine.run(input).then(output => {
         t.deepEqual(output, input);
+    });
+
+});
+
+
+test('Choice (Wrong Type)', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        Variable: '$.foo',
+                        StringEquals: '0',
+                        Next: 'Two',
+                    }
+                ],
+                Default: 'Three',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Fail',
+                Error: 'String does not match.',
+                Cause: 'Invalid input.'
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = { foo: 0 };
+
+    return t.throws(machine.run(input)).then(output => {
+        t.is(typeof output, 'object');
+        t.is(output.Error, json.States.Three.Error);
+        t.is(output.Cause, json.States.Three.Cause);
     });
 
 });

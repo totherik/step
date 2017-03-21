@@ -1,10 +1,9 @@
 const Fail = require('./fail');
 const State = require('./mixins/state');
 const mixins = require('./mixins/mixins');
-const ChoiceRule = require('./choicerule');
+const ChoiceRule = require('./choice_rule');
 const InputFilter = require('./mixins/inputfilter');
 const OutputFilter = require('./mixins/outputfilter');
-
 
 
 class Choice extends mixins(InputFilter, OutputFilter, State) {

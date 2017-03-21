@@ -34,6 +34,11 @@ needs to be initialized will have to be initialized in the implementing State's
 factory function (`create`). It may not be a problem , but it's not overly obvious
 when creating new States and adding mixins.
 
+This version generates the entire machine prior to execution. Since a FaaS
+deployment is generally compute on-demand, rather than building the whole thing
+on each initialization, an optimization might be to JIT create and execute each
+state in the tree in response to each runtime state transition.
+
 
 ## Basic API
 ```js

@@ -13,7 +13,7 @@ const mock = require('./__mocktask__');
 class Task extends mixins(Timeout, Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter, State) {
 
     static create(name, spec, factory) {
-        const { Resource, TimeoutSeconds, HeartbeatSeconds, Next, End } = spec;
+        const { Resource, TimeoutSeconds = 60, HeartbeatSeconds, Next, End } = spec;
 
         const task = new Task(name, spec);
         task.resource = Resource;

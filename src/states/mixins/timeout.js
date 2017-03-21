@@ -11,7 +11,7 @@ function Timeout(Base) {
         }
 
         setTimeout(promise) {
-            const { timeoutSeconds = 60 } = this;
+            const { timeoutSeconds } = this;
 
             if (isNaN(timeoutSeconds)) {
                 return promise;

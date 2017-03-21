@@ -1,43 +1,49 @@
-const States = require('./states/states');
+const Factory = require('./factory');
 const Schema = require('./schema');
-
-
-const privates = new Map();
 
 
 class Machine {
 
-    static create(spec) {
-        Schema.validate(spec);
-        return new Machine(spec);
+    static create(json) {
+        Schema.validate(json);
+
+        const { StartAt, States, Version, Comment, TimeoutSeconds } = json;
+        const factory = Factory.create(States);
+
+        const machine = new Machine();
+        machine.next = factory.build(StartAt);
+        machine.version = Version;
+        machine.comment = Comment;
+        machine.timeoutSeconds = TimeoutSeconds;
+        return machine;
     }
 
-    constructor(spec) {
-        // Prevent swapping spec after validation.
-        privates.set(this, { spec });
+    constructor() {
+        this.next = undefined;
+        this.version = undefined;
+        this.comment = undefined;
+        this.timeoutSeconds = undefined;
     }
 
-    /**
-     * https://states-language.net/spec.html#data
-     *
-     * "When a state machine is started, the caller can provide an initial JSON
-     * text as input, which is passed to the machine's start state as input.
-     * If no input is provided, the default is an empty JSON object, {}."
-     *
-     * This code interprets this to mean undefined or null. This constraint
-     * can be relaxed in the future, if necessary.
-     */
     run(input) {
-        // Explicity cover null as default parameters only are applied when
-        // arguments are undefined.
-        if (input === undefined || input === null) {
-            input = {};
-        }
+        // TODO: Implement timeout.
+        return this.next
+            .run(input)
+            .catch(error => {
+                if (error instanceof Error) {
+                    // Normalize errors.
+                    // TODO: May lose stack trace informations here,
+                    // so come up with a better plan.
+                    const { name, message } = error;
+                    error = {
+                        Error: error.name,
+                        Cause: error.message,
+                    };
+                }
 
-        const { spec } = privates.get(this);
-        return States.run(input, spec);
+                return Promise.reject(error);
+            });
     }
-
 }
 
 

@@ -22,22 +22,16 @@ implementation could be provided by the author. (I like this one, personally.)
 See additional [notes below](#notes).
 
 
-## Experimental
-All new work is going in `/experimental` as I thought using mixins would make
-things more reasonable. One caveat to this is when one needs to initialize
+## Mixins
+One caveat to using mixins in this manner is when one needs to initialize
 properties that result in a state type getting created. For example, `Task`
 states have "Catchers" that are linked to subsequent states (via `Next`).
 Because there is a common shared factory (factory.js) to generate states, that
 factory needs to be passed into state factory functions, but it isn't passed
 into State constructors. Due to that, anything internal properties that a mixin
 needs to be initialized will have to be initialized in the implementing State's
-factory function (`create`). It may not be a problem , but it's not overly obvious
+factory function (`create`). It may not be a problem , but it's not very obvious
 when creating new States and adding mixins.
-
-This version generates the entire machine prior to execution. Since a FaaS
-deployment is generally compute on-demand, rather than building the whole thing
-on each initialization, an optimization might be to JIT create and execute each
-state in the tree in response to each runtime state transition.
 
 
 ## Basic API
@@ -84,10 +78,11 @@ across providers.
 - There are many things in this codebase that could be written much more tersely.
 The goal is to keep expressiveness and readability until other factors, such as
 performance, dictate otherwise.
-- The overall mental model here is `Machine -> States -> {1..n} State -> Type`
-where the `State` implementation is provided by the `Type` in a kind of
-Flyweight pattern.
 - Be aware that some `Type`s compose `States` as well. For example, `Parallel`
 and `Choice` run state machines internal to their type.
 - Even though Classes are used, this codebase favors exposing Factories over
 Constructors both internally and externally.
+- This version generates the entire machine prior to execution. Since a FaaS
+deployment is generally compute on-demand, rather than building the whole thing
+on each initialization, an optimization might be to JIT create and execute each
+state in the tree in response to each runtime state transition.

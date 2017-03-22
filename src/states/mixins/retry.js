@@ -1,20 +1,18 @@
+const mixins = require('./index');
+const Runner = require('./runner');
+const ResultFilter = require('./resultfilter');
+const ErrorMatcher = require('./errormatcher');
 
 
-class Retrier {
+class Retrier extends mixins(ErrorMatcher) {
 
-    constructor({ ErrorEquals = [], IntervalSeconds = 1, MaxAttempts = 3, BackoffRate = 2.0 }) {
-        this.errorEquals = ErrorEquals;
+    constructor(name, spec, factory) {
+        super(name, spec, factory);
+        
+        const { IntervalSeconds = 1, MaxAttempts = 3, BackoffRate = 2.0 } = spec;
         this.intervalSeconds = IntervalSeconds;
         this.maxAttempts = MaxAttempts;
         this.backoffRate = BackoffRate;
-    }
-
-    match({ Error }) {
-        return this.errorEquals.includes(Error);
-    }
-
-    isWildcard() {
-        return this.errorEquals.length === 1 && this.errorEquals[0] === 'States.ALL';
     }
 
     canContinue(attempts) {
@@ -36,7 +34,7 @@ function Retry(Base) {
             super(name, spec, factory);
 
             const { Retry = [] } = spec;
-            this.retriers = Retry.map(spec => new Retrier(spec));
+            this.retriers = Retry.map(spec => new Retrier('', spec, factory));
         }
 
         retry(fn, input) {

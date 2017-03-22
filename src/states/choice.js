@@ -1,11 +1,13 @@
 const Fail = require('./fail');
 const mixins = require('./mixins');
+const State = require('./mixins/state');
+const Runner = require('./mixins/runner');
 const ChoiceRule = require('./choice_rule');
 const InputFilter = require('./mixins/inputfilter');
 const OutputFilter = require('./mixins/outputfilter');
 
 
-class Choice extends mixins(InputFilter, OutputFilter) {
+class Choice extends mixins(Runner, InputFilter, OutputFilter, State) {
 
     static fail(name, factory) {
         const spec = {
@@ -31,10 +33,11 @@ class Choice extends mixins(InputFilter, OutputFilter) {
 
     run(input) {
         const filtered = this.filterInput(input);
+        const next = this.choose(filtered);
 
         return super.run(filtered)
             .then(result => this.filterOutput(result))
-            .then(input => this.choose(filtered).run(input));
+            .then(output => this.continue(output, next));
     }
 
     _run(input) {

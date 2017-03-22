@@ -1,4 +1,5 @@
 const mixins = require('./mixins');
+const State = require('./mixins/state');
 const Catch = require('./mixins/catch');
 const Retry = require('./mixins/retry');
 const Runner = require('./mixins/runner');
@@ -9,7 +10,7 @@ const ResultFilter = require('./mixins/resultfilter');
 const mock = require('./__mocktask__');
 
 
-class Task extends mixins(Timeout, Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter) {
+class Task extends mixins(Timeout, Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter, State) {
 
     constructor(name, spec, factory) {
         super(name, spec, factory);
@@ -33,7 +34,8 @@ class Task extends mixins(Timeout, Catch, Retry, Runner, InputFilter, OutputFilt
         };
 
         const rejected = (error) => {
-            return this.catch(error);
+            const next = this.catcher(error);
+            return this.continue(error, next);
         }
 
         return this

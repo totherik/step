@@ -1,11 +1,12 @@
 const mixins = require('./mixins');
+const State = require('./mixins/state');
 const PathUtils = require('../pathutils');
 const Runner = require('./mixins/runner');
 const InputFilter = require('./mixins/inputfilter');
 const OutputFilter = require('./mixins/outputfilter');
 
 
-class Wait extends mixins(Runner, InputFilter, OutputFilter) {
+class Wait extends mixins(Runner, InputFilter, OutputFilter, State) {
 
     constructor(name, spec, factory) {
         super(name, spec, factory);

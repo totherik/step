@@ -12,9 +12,9 @@ function Runner(Base) {
             this.end = End;
         }
 
-        continue(input) {
-            if (this.next) {
-                return this.next.run(input);
+        continue(input, destination = this.next) {
+            if (destination) {
+                return destination.run(input);
             }
 
             if (this.end) {

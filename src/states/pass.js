@@ -1,11 +1,12 @@
 const mixins = require('./mixins');
+const State = require('./mixins/state');
 const Runner = require('./mixins/runner');
 const InputFilter = require('./mixins/inputfilter');
 const OutputFilter = require('./mixins/outputfilter');
 const ResultFilter = require('./mixins/resultfilter');
 
 
-class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter) {
+class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State) {
 
     constructor(name, spec, factory) {
         super(name, spec, factory);

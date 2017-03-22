@@ -1,27 +1,28 @@
+const mixins = require('./index');
+const Runner = require('./runner');
+const Fail = require('../fail');
+const ResultFilter = require('./resultfilter');
+const ErrorMatcher = require('./errormatcher');
 
 
-class Catcher {
+class Catcher extends mixins(ErrorMatcher, ResultFilter, Runner) {
 
     static from(name, { Catch = [] }, factory) {
         return Catch.map((spec, index) => new Catcher(`${name}_Catcher_${index}`, spec, factory));
     }
 
     constructor(name, spec, factory) {
-        const { ErrorEquals, Next } = spec;
-        this.errorEquals = ErrorEquals;
-        this.next = factory.build(Next);
-    }
-
-    match({ Error }) {
-        return this.errorEquals.includes(Error);
-    }
-
-    isWildcard() {
-        return this.errorEquals.length === 1 && this.errorEquals[0] === 'States.ALL';
+        super(name, spec, factory);
     }
 
     run(input) {
-        return this.next.run(input);
+        return super.run(input)
+            .then(output => this.continue(output));
+    }
+
+    _run(input) {
+        const filtered = this.filterResult(input);
+        return Promise.resolve(filtered);
     }
 
 }
@@ -36,9 +37,8 @@ function Catch(Base) {
             this.catchers = Catcher.from(name, spec, factory);
         }
 
-        catch(error) {
-            const catcher = this.match(error);
-            return catcher ? catcher.run(error) : Promise.reject(error);
+        catcher(error) {
+            return this.match(error) || new Fail(`${this.name}_Failure`, error);
         }
 
         match(error) {

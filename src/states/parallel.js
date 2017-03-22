@@ -1,14 +1,13 @@
-const State = require('./mixins/state');
+const mixins = require('./mixins');
 const Catch = require('./mixins/catch');
 const Retry = require('./mixins/retry');
-const mixins = require('./mixins/mixins');
 const Runner = require('./mixins/runner');
 const InputFilter = require('./mixins/inputfilter');
 const OutputFilter = require('./mixins/outputfilter');
 const ResultFilter = require('./mixins/resultfilter');
 
 
-class Parallel extends mixins(Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter, State) {
+class Parallel extends mixins(Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter) {
 
     constructor(name, spec, factory) {
         super(name, spec, factory);
@@ -30,16 +29,17 @@ class Parallel extends mixins(Catch, Retry, Runner, InputFilter, OutputFilter, R
         // conversely, the result of `this.catch` should not have
         // filters/this.continue executed after.
         const resolved = (result) => {
-            result = this.filterResult(filtered, result);
-            result = this.filterOutput(result);
-            return this.continue(result);
+            const output = this.filterResult(filtered, result);
+            const input = this.filterOutput(output);
+            return this.continue(input);
         };
 
         const rejected = (error) => {
             return this.catch(error);
         }
 
-        return this.retry(input => super.run(input), filtered)
+        return this
+            .retry(input => super.run(input), filtered)
             .then(resolved, rejected);
     }
 

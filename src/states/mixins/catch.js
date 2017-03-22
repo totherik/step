@@ -1,20 +1,15 @@
-const mixins = require('./mixins');
-const Runner = require('./runner');
 
 
-class Catcher extends mixins(Runner) {
+class Catcher {
 
     static from(name, { Catch = [] }, factory) {
-        return Catch.map((spec, index) => {
-            return new Catcher(`${name}_Catcher_${index}`, spec, factory);
-        });
+        return Catch.map((spec, index) => new Catcher(`${name}_Catcher_${index}`, spec, factory));
     }
 
     constructor(name, spec, factory) {
-        super(name, spec, factory);
-
-        const { ErrorEquals } = spec;
+        const { ErrorEquals, Next } = spec;
         this.errorEquals = ErrorEquals;
+        this.next = factory.build(Next);
     }
 
     match({ Error }) {
@@ -26,7 +21,7 @@ class Catcher extends mixins(Runner) {
     }
 
     run(input) {
-        return this.continue(input);
+        return this.next.run(input);
     }
 
 }

@@ -112,9 +112,8 @@ test('ResultPath (non-Reference path)', t => {
     };
 
     return t.throws(machine.run(input)).then(error => {
-        const { Error, Cause } = error;
+        const { Error } = error;
         t.is(Error, 'States.ResultPathMatchFailure');
-        t.is(Cause, 'Invalid ResultPath for state "One". Provided "$.*", but ResultPath must be a Reference Path (https://states-language.net/spec.html#path).');
     });
 
 });

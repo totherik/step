@@ -14,6 +14,18 @@ function OutputFilter(Base) {
 
         filterOutput(output) {
             const { outputPath = '$' } = this;
+
+            /**
+             * Per: https://states-language.net/spec.html#filters
+             *
+             * If the value of OutputPath is null, that means the input and result
+             * are discarded, and the effective output from the state is an empty
+             * JSON object, {}.
+             */
+            if (outputPath === null) {
+                return {};
+            }
+
             return PathUtils.query(output, outputPath);
         }
 

@@ -15,37 +15,29 @@ const INDEFINITE_SCOPES = new Map([
 ]);
 
 
-function rule({ expression: { type }, scope }) {
-    // http://goessner.net/articles/JsonPath/
-    // https://github.com/jayway/JsonPath#what-is-returned-when
-    return INDEFINITE_TYPES.has(type) || INDEFINITE_SCOPES.has(scope);
-}
+const CACHE = new Map([
+    [ '$', true ]
+]);
 
 
 function isDefinitePath(path) {
-    // TODO: Cache query results for perf.
-    // TODO: Can also optimize for '$'
-    const operations = JSONPath.parse(path);
-    return !operations.find(rule);
+    if (CACHE.has(path)) {
+        return CACHE.get(path);
+    }
+
+    const parsed = JSONPath.parse(path);
+    const result = !parsed.find(({ expression: { type }, scope }) => {
+        // http://goessner.net/articles/JsonPath/
+        // https://github.com/jayway/JsonPath#what-is-returned-when
+        return INDEFINITE_TYPES.has(type) || INDEFINITE_SCOPES.has(scope);
+    });
+
+    CACHE.set(path, result);
+    return result;
 }
 
 
 function query(object, path) {
-    /**
-     * Per: https://states-language.net/spec.html#filters
-     *
-     * If the value of InputPath is null, that means that the raw input is
-     * discarded, and the effective input for the state is an empty JSON
-     * object, {}.
-     *
-     * If the value of OutputPath is null, that means the input and result
-     * are discarded, and the effective output from the state is an empty
-     * JSON object, {}.
-     */
-    if (path === null) {
-        return {};
-    }
-
     if (path === '$') {
         return object;
     }

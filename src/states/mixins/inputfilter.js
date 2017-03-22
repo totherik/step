@@ -14,6 +14,17 @@ function InputFilter(Base) {
 
         filterInput(input) {
             const { inputPath = '$' } = this;
+            /**
+             * Per: https://states-language.net/spec.html#filters
+             *
+             * If the value of InputPath is null, that means that the raw input is
+             * discarded, and the effective input for the state is an empty JSON
+             * object, {}.
+             */
+            if (inputPath === null) {
+                return {};
+            }
+            
             return PathUtils.query(input, inputPath);
         }
 

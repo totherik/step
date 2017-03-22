@@ -17,15 +17,12 @@ class Pass extends mixins(Runner, InputFilter, OutputFilter, ResultFilter, State
 
 
     run(input) {
-        input = this.filterInput(input);
+        const filtered = this.filterInput(input);
 
-        return super.run(input)
-            .then(result => {
-                let output;
-                output = this.filterResult(input, result);
-                output = this.filterOutput(output);
-                return this.continue(output);
-            });
+        return super.run(filtered)
+            .then(result => this.filterResult(filtered, result))
+            .then(result => this.filterOutput(result))
+            .then(result => this.continue(result));
     }
 
     _run(input) {

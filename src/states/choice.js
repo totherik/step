@@ -19,17 +19,21 @@ class Choice extends mixins(InputFilter, OutputFilter, State) {
             return [ rule, next ];
         });
 
-        this.default = factory.build(Default);
+        this.default = factory.build(Default) || (function (name, factory) {
+            const spec = {
+                Error: 'States.NoChoiceMatched',
+                Cause: `All Choices failed for State "${name}" and no Default specified.`
+            };
+            return new Fail(`${name}_Fail`, spec, factory);
+        })(name, factory);
     }
 
     run(input) {
-        input = this.filterInput(input);
+        const filtered = this.filterInput(input);
 
-        return super.run(input)
-            .then(result => {
-                const output = this.filterOutput(result);
-                return this.choose(input).run(output);
-            });
+        return super.run(filtered)
+            .then(result => this.filterOutput(result))
+            .then(result => this.choose(filtered).run(result));
     }
 
     choose(input) {
@@ -39,16 +43,7 @@ class Choice extends mixins(InputFilter, OutputFilter, State) {
             }
         }
 
-        if (this.default) {
-            return this.default;
-        }
-
-        const spec = {
-            Error: 'States.NoChoiceMatched',
-            Cause: `All Choices failed for State "${this.name}" and no Default specified.`
-        };
-
-        return new Fail(`${this.name}_Fail`, spec);
+        return this.default;
     }
 
 }

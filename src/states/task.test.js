@@ -295,7 +295,7 @@ test('Retry', t => {
                     {
                         ErrorEquals: [ 'States.ALL' ],
                         MaxAttempts: 0,
-                    }
+                    },
                 ],
                 End: true,
             },
@@ -310,6 +310,55 @@ test('Retry', t => {
     return t.throws(machine.run(input)).then(error => {
         const { Error, Cause } = error;
         t.is(Error, 'States.Timeout');
+    });
+
+});
+
+
+test('Catch w/ OutputPath', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Task',
+                Resource: 'test',
+                TimeoutSeconds: 1,
+                OutputPath: '$.Error',
+                Catch: [{
+                    ErrorEquals: [ 'States.ALL' ],
+                    Next: 'Three',
+                }],
+                Next: 'Two',
+            },
+            Two: {
+                Type: 'Succeed',
+            },
+            Three: {
+                Type: 'Wait',
+                Seconds: 1,
+                Next: 'Four',
+            },
+            Four: {
+                Type: 'Fail',
+                Error: 'Broken',
+                Cause: 'Unknown',
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    const input = {
+        SleepSeconds: [ 2 ],
+        Result: {
+            foo: 'bar',
+        },
+    };
+
+    return t.throws(machine.run(input)).then(output => {
+        const { Error, Cause } = output;
+        t.is(Error, 'Broken');
+        t.is(Cause, 'Unknown');
     });
 
 });

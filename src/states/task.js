@@ -21,16 +21,24 @@ class Task extends mixins(Timeout, Catch, Retry, Runner, InputFilter, OutputFilt
     }
 
     run(input) {
-        input = this.filterInput(input);
+        const filtered = this.filterInput(input);
 
-        return this.retry(input => super.run(input), input)
-            .then(result => {
-                let output;
-                output = this.filterResult(input, result);
-                output = this.filterOutput(output);
-                return this.continue(output);
-            })
-            .catch(error => this.catch(error));
+        // Using resolved/rejected as I don't want the Promises to chain. A
+        // failure in `this.continue` should not trigger `this.catch` and
+        // conversely, the result of `this.catch` should not have
+        // filters/this.continue executed after.
+        const resolved = (result) => {
+            result = this.filterResult(filtered, result);
+            result = this.filterOutput(result);
+            return this.continue(result);
+        };
+
+        const rejected = (error) => {
+            return this.catch(error);
+        }
+
+        return this.retry(input => super.run(input), filtered)
+            .then(resolved, rejected);
     }
 
     _run(input) {

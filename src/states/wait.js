@@ -19,13 +19,11 @@ class Wait extends mixins(Runner, InputFilter, OutputFilter, State) {
     }
 
     run(input) {
-        input = this.filterInput(input);
-
-        return super.run(input)
-            .then(result => {
-                const output = this.filterOutput(result);
-                return this.continue(output);
-            });
+        const filtered = this.filterInput(input);
+        
+        return super.run(filtered)
+            .then(result => this.filterOutput(result))
+            .then(result => this.continue(result));
     }
 
     _run(input) {

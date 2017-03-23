@@ -22,7 +22,7 @@ function State(Base) {
         constructor(spec) {
             super(spec);
             this.next = spec.Next;
-            this.deferred = defer();
+            this.deferred = defer(); // Get yer pitchforks! Someone used deffered and it's an "antipattern"!
         }
 
         run(data) {

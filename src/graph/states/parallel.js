@@ -12,6 +12,7 @@ class Parallel extends mixins(Catch, Filter) {
     }
 
     _run(input) {
+        // TODO: Retry
         const tasks = this.branches.map(machine => machine.run(input));
         return Promise.all(tasks);
     }

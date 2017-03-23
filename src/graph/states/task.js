@@ -13,6 +13,7 @@ class Task extends mixins(Timeout, Catch, Filter) {
     }
 
     _run(input) {
+        // TODO: Retry
         const exec = mock(this);
         return exec(input);
     }

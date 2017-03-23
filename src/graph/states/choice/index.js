@@ -1,6 +1,7 @@
-const mixins = require('./mixins');
-const Filter = require('./mixins/filter');
-const ChoiceRule = require('./choice_rule');
+const mixins = require('../mixins');
+const ChoiceRule = require('./rule');
+const Filter = require('../mixins/filter');
+
 
 
 class Choice extends mixins(Filter) {

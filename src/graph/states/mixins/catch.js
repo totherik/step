@@ -1,4 +1,4 @@
-const PathUtils = require('../../../../pathutils');
+const PathUtils = require('../../../pathutils');
 
 
 function Catch(Base) {

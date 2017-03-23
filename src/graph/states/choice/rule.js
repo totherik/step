@@ -1,4 +1,4 @@
-const operators = require('./choice_operators');
+const operators = require('./operators');
 
 
 const ChoiceOperators = new Map([

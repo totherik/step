@@ -1,6 +1,6 @@
 const mixins = require('./mixins');
 const Filter = require('./mixins/filter');
-const PathUtils = require('../../../pathutils');
+const PathUtils = require('../../pathutils');
 
 
 class Wait extends mixins(Filter) {

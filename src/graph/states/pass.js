@@ -1,8 +1,7 @@
-const mixins = require('./mixins');
-const Filter = require('./mixins/filter');
+const  { mixin, Filter } = require('./mixins');
 
 
-class Pass extends mixins(Filter) {
+class Pass extends mixin(Filter) {
 
     constructor(spec) {
         super(spec);

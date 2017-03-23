@@ -1,11 +1,8 @@
-const mixins = require('./mixins');
-const Catch = require('./mixins/catch');
-const Filter = require('./mixins/filter');
-const Timeout = require('./mixins/timeout');
 const mock = require('./__mocktask__');
+const  { mixin, Timeout, Catch, Filter } = require('./mixins');
 
 
-class Task extends mixins(Timeout, Catch, Filter) {
+class Task extends mixin(Timeout, Catch, Filter) {
 
     constructor(spec) {
         super(spec);

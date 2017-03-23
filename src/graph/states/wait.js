@@ -1,9 +1,8 @@
-const mixins = require('./mixins');
-const Filter = require('./mixins/filter');
 const PathUtils = require('../../pathutils');
+const  { mixin, Filter } = require('./mixins');
 
 
-class Wait extends mixins(Filter) {
+class Wait extends mixin(Filter) {
 
     constructor(spec) {
         super(spec);

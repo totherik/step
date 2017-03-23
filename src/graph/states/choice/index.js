@@ -1,10 +1,8 @@
-const mixins = require('../mixins');
 const ChoiceRule = require('./rule');
-const Filter = require('../mixins/filter');
+const { mixin, Filter } = require('../mixins');
 
 
-
-class Choice extends mixins(Filter) {
+class Choice extends mixin(Filter) {
 
     constructor(spec) {
         super(spec);

@@ -1,7 +1,7 @@
-const mixins = require('./mixins');
+const  { mixin } = require('./mixins');
 
 
-class Fail extends mixins() {
+class Fail extends mixin(/* State */) {
 
     constructor(spec) {
         super(spec);

@@ -64,10 +64,13 @@ class Machine {
         const fulfilled = fn => {
             return result => {
                 this.stack.push([ vertexA.Name, process.hrtime(start) ]);
-                return impl.getNext().then(next => {
+
+                const resolve = next => {
                     const vertexB = graph.getVertexAt(vertexA, next);
                     return vertexB ? this._run(vertexB, result) : fn(result);
-                });
+                };
+
+                return impl.getNext().then(resolve);
             };
         }
 

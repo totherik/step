@@ -15,7 +15,7 @@ function Filter(Base) {
         run(data) {
             const input = this.filterInput(data);
 
-            const resolved = (result) => {
+            const resolved = result => {
                 const output = this.filterResult(input, result);
                 return this.filterOutput(output);
             };

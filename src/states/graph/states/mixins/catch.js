@@ -11,15 +11,16 @@ function Catch(Base) {
         }
 
         run(data) {
-            return super.run(data)
-                .catch((error) => {
-                    const catcher = this.match(error);
-                    if (catcher) {
-                        this.next = catcher.Next;
-                        return error;
-                    }
-                    return Promise.reject(error);
-                });
+            const reject = error => {
+                const catcher = this.match(error);
+                if (catcher) {
+                    this.next = catcher.Next;
+                    return error;
+                }
+                return Promise.reject(error);
+            };
+
+            return super.run(data).catch(reject);
         }
 
         match({ Error }) {

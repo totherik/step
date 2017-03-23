@@ -23,7 +23,7 @@ function Timeout(Base) {
                 const timer = setTimeout(reject, timeoutSeconds * 1000, { Error: 'States.Timeout' });
 
                 promise
-                    .then((result) => {
+                    .then(result => {
                         clearTimeout(timer);
                         resolve(result);
                     })

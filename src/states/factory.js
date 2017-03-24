@@ -1,10 +1,10 @@
-const Pass = require('./states/pass');
-const Task = require('./states/task');
-const Wait = require('./states/wait');
-const Fail = require('./states/fail');
-const Choice = require('./states/choice');
-const Succeed = require('./states/succeed');
-const Parallel = require('./states/parallel');
+const Pass = require('./pass');
+const Task = require('./task');
+const Wait = require('./wait');
+const Fail = require('./fail');
+const Choice = require('./choice');
+const Succeed = require('./succeed');
+const Parallel = require('./parallel');
 
 
 const StateTypes = new Map([

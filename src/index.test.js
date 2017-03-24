@@ -3,7 +3,7 @@ const Machine = require('./index');
 
 
 
-test('Graph', t => {
+test.only('Graph', t => {
 
     const json = {
         StartAt: 'One',
@@ -11,7 +11,7 @@ test('Graph', t => {
         States: {
             One: {
                 Type: 'Wait',
-                Seconds: 0,
+                Seconds: 1,
                 Next: 'Two',
             },
             Two: {
@@ -24,6 +24,7 @@ test('Graph', t => {
             },
             Seven: {
                 Type: 'Task',
+                Resource: 'foo',
                 TimeoutSeconds: 1,
                 Retry: [
                     {
@@ -67,6 +68,8 @@ test('Graph', t => {
             },
             Four: {
                 Type: 'Fail',
+                Error: 'States.Error',
+                Cause: 'A cause.',
             },
             Five: {
                 Type: 'Parallel',
@@ -76,7 +79,7 @@ test('Graph', t => {
                         States: {
                             FiveOne: {
                                 Type: 'Wait',
-                                Seconds: 0,
+                                Seconds: 1,
                                 End: true
                             },
                         }
@@ -86,7 +89,7 @@ test('Graph', t => {
                         States: {
                             FiveTwo: {
                                 Type: 'Wait',
-                                Seconds: 0,
+                                Seconds: 1,
                                 End: true
                             },
                         }

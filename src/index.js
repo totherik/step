@@ -1,11 +1,13 @@
 const Graph = require('./graph');
-const Factory = require('./factory');
+const Schema = require('./schema');
 const { async } = require('./util');
+const Factory = require('./states/factory');
 
 
 class Machine {
 
     static create(json) {
+        Schema.validate(json);
         return new Machine(json);
     }
 

@@ -3,7 +3,7 @@ const Machine = require('./index');
 
 
 
-test.only('Graph', t => {
+test('Graph', t => {
 
     const json = {
         StartAt: 'One',

@@ -62,14 +62,14 @@ class Machine {
 
     _runner() {
         return async(function *(graph, startAt, input) {
-            let vertexA = startAt;
+            let currentState = startAt;
             let result = input;
 
-            while (vertexA) {
-                const state = Factory.create(vertexA, Machine);
+            while (currentState) {
+                const state = Factory.create(currentState, Machine);
                 const { output, next } = yield state.run(result);
-                const vertexB = graph.getVertexAt(vertexA, next);
-                vertexA = vertexB;
+                const nextState = graph.getVertexAt(currentState, next);
+                currentState = nextState;
                 result = output;
             }
 

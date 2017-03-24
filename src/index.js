@@ -1,41 +1,78 @@
-const Schema = require('./schema');
-const mixins = require('./states/mixins');
-const Factory = require('./states/factory');
-const Timeout = require('./states/mixins/timeout');
+const Graph = require('./graph');
+const Factory = require('./factory');
+const { async } = require('./util');
 
 
-class Machine extends mixins(Timeout) {
+class Machine {
 
     static create(json) {
-        Schema.validate(json);
-
-        const { States } = json;
-        const factory = Factory.create(States);
-        return new Machine('__root__', json, factory);
+        return new Machine(json);
     }
 
-    constructor(name, spec, factory) {
-        super(name, spec, factory);
+    constructor({ StartAt, States }) {
+        this.graph = new Graph();
+        this.states = States;
+        this.startAt = this.build(StartAt);
+    }
 
-        const { StartAt, Version } = spec;
-        this.startAt = factory.build(StartAt);
-        this.version = Version;
+    build(name) {
+        const { graph, states } = this;
+
+        const state = states[name];
+        state.Name = name;
+        graph.addVertex(state);
+
+        if (state.Next) {
+            const next = this.build(state.Next);
+            graph.addEdge(state, next, state.Next);
+        }
+
+        if (Array.isArray(state.Catch)) {
+            state.Catch.forEach(({ Next }, index) => {
+                const next = this.build(Next);
+                graph.addEdge(state, next, Next);
+            });
+        }
+
+        if (Array.isArray(state.Choices)) {
+            state.Choices.forEach(({ Next }, index) => {
+                const next = this.build(Next);
+                graph.addEdge(state, next, Next);
+            });
+        }
+
+        if (state.Default) {
+            const next = this.build(state.Default);
+            graph.addEdge(state, next, state.Default);
+        }
+
+        // Branches are handled internally to the Parallel State
+        // because they don't define state transitions.
+
+        return state;
     }
 
     run(input) {
-        const rejected = error => {
-            if (error instanceof Error) {
-                const { name, stack } = error;
-                error = {
-                    Error: name,
-                    Cause: stack,
-                };
-            }
-            return Promise.reject(error);
-        };
+        const { graph, startAt } = this;
+        const run = this._runner();
+        return run(graph, startAt, input);
+    }
 
-        const exec = this.startAt.run(input).catch(rejected);
-        return this.setTimeout(exec);
+    _runner() {
+        return async(function *(graph, startAt, input) {
+            let vertexA = startAt;
+            let result = input;
+
+            while (vertexA) {
+                const state = Factory.create(vertexA, Machine);
+                const { output, next } = yield state.run(result);
+                const vertexB = graph.getVertexAt(vertexA, next);
+                vertexA = vertexB;
+                result = output;
+            }
+
+            return result;
+        });
     }
 
 }

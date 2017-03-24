@@ -1,53 +1,17 @@
-const mixins = require('./mixins');
-const State = require('./mixins/state');
-const Catch = require('./mixins/catch');
-const Retry = require('./mixins/retry');
-const Runner = require('./mixins/runner');
-const InputFilter = require('./mixins/inputfilter');
-const OutputFilter = require('./mixins/outputfilter');
-const ResultFilter = require('./mixins/resultfilter');
+const  { mixin, Retry, Filter } = require('./mixins');
 
 
-class Parallel extends mixins(Catch, Retry, Runner, InputFilter, OutputFilter, ResultFilter, State) {
+class Parallel extends mixin(Retry, Filter) {
 
-    constructor(name, spec, factory) {
-        super(name, spec, factory);
-
+    constructor(spec, Machine) {
+        super(spec);
         const { Branches = [] } = spec;
-        this.branches = Branches.map(({ StartAt, States }) => {
-            // This is a bit brittle, but allows us to build subtrees
-            // without a cyclical 'require' dependency.
-            const Factory = factory.constructor;
-            return Factory.create(States).build(StartAt);
-        });
-    }
-
-    run(input) {
-        const filtered = this.filterInput(input);
-
-        // Using resolved/rejected as I don't want the Promises to chain. A
-        // failure in `this.continue` should not trigger `this.catch` and
-        // conversely, the result of `this.catch` should not have
-        // filters/this.continue executed after.
-        const resolved = (result) => {
-            const output = this.filterResult(filtered, result);
-            const input = this.filterOutput(output);
-            return this.continue(input);
-        };
-
-        const rejected = (error) => {
-            const next = this.catcher(error);
-            return this.continue(error, next);
-        }
-
-        return this
-            .retry(input => super.run(input), filtered)
-            .then(resolved, rejected);
+        this.branches = Branches.map(Machine.create);
     }
 
     _run(input) {
-        const tasks = this.branches.map(branch => branch.run(input));
-        return Promise.all(tasks);
+        const tasks = this.branches.map(machine => machine.run(input));
+        return Promise.all(tasks).then(output => ({ output }));
     }
 
 }

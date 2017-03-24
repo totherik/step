@@ -1,23 +1,17 @@
-const mixins = require('./mixins');
-const State = require('./mixins/state');
+const  { mixin } = require('./mixins');
 
 
-class Fail extends mixins(State) {
+class Fail extends mixin(/* State */) {
 
-    constructor(name, spec, factory) {
-        super(name, spec, factory);
-
-        const { Error, Cause } = spec;
-        this.error = Error;
-        this.cause = Cause;
+    constructor(spec) {
+        super(spec);
+        this.error = spec.Error;
+        this.cause = spec.Cause;
     }
 
     _run(input) {
         const { error, cause } = this;
-        return Promise.reject({
-            Error: error,
-            Cause: cause,
-        });
+        return Promise.reject({ Error: error, Cause: cause });
     }
 
 }

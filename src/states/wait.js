@@ -1,44 +1,27 @@
-const mixins = require('./mixins');
-const State = require('./mixins/state');
 const PathUtils = require('../pathutils');
-const Runner = require('./mixins/runner');
-const InputFilter = require('./mixins/inputfilter');
-const OutputFilter = require('./mixins/outputfilter');
+const  { mixin, Filter } = require('./mixins');
 
 
-class Wait extends mixins(Runner, InputFilter, OutputFilter, State) {
+class Wait extends mixin(Filter) {
 
-    constructor(name, spec, factory) {
-        super(name, spec, factory);
+    constructor(spec) {
+        super(spec);
+        this.seconds = spec.Seconds;
+        this.secondsPath = spec.SecondsPath;
+        this.timestamp = spec.Timestamp;
+        this.timestampPath = spec.TimestampPath;
 
-        const { Seconds, SecondsPath, Timestamp, TimestampPath } = spec;
-        this.seconds = Seconds;
-        this.secondsPath = SecondsPath;
-        this.timestamp = Timestamp;
-        this.timestampPath = TimestampPath;
-    }
-
-    run(input) {
-        return Promise.resolve(input)
-            .then(input => this.filterInput(input))
-            .then(filtered => super.run(filtered))
-            .then(output => this.filterOutput(output))
-            .then(input => this.continue(input));
+        this.timeout = global.setTimeout
     }
 
     _run(input) {
         // Since there can only ever be one of these set, this code could
         // probably stand to be tightened up a bit.
-        const { timestampPath, secondsPath } = this;
-        let { timestamp, seconds } = this;
+        const {  seconds, secondsPath, timestamp, timestampPath } = this;
         let milliseconds = 0;
 
         if (typeof timestampPath === 'string') {
             timestamp = PathUtils.query(input, timestampPath);
-        }
-
-        if (typeof secondsPath === 'string') {
-            seconds = PathUtils.query(input, secondsPath);
         }
 
         if (typeof timestamp === 'string') {
@@ -46,12 +29,16 @@ class Wait extends mixins(Runner, InputFilter, OutputFilter, State) {
             milliseconds = then - Date.now();
         }
 
+        if (typeof secondsPath === 'string') {
+            seconds = PathUtils.query(input, secondsPath);
+        }
+
         if (typeof seconds === 'number') {
             milliseconds = seconds * 1000;
         }
 
         return new Promise(resolve => {
-            setTimeout(resolve, milliseconds, input);
+            setTimeout(resolve, milliseconds, { output: input });
         });
     }
 

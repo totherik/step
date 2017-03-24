@@ -1,4 +1,4 @@
-const PathUtils = require('../pathutils');
+const PathUtils = require('../../pathutils');
 
 
 /**
@@ -56,7 +56,7 @@ function ts(fn) {
  * Rule Builder
  */
 function build(name, type, test) {
-    return function rule(_, { Variable = '$', [name]: expected }) {
+    return function rule({ Variable = '$', [name]: expected }) {
         return function exec(input) {
             const actual = PathUtils.query(input, Variable);
             return type(expected) && type(actual) && test(actual, expected);

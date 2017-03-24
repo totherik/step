@@ -1,19 +1,51 @@
 const PathUtils = require('../../pathutils');
 
 
-function ResultFilter(Base) {
+function Filter(Base) {
 
-    return class ResultFilter extends Base {
+    return class Filter extends Base {
 
-        constructor(name, spec, factory) {
-            super(name, spec, factory);
+        constructor(spec) {
+            super(spec);
+            this.inputPath = spec.InputPath;
+            this.resultPath = spec.ResultPath;
+            this.outputPath = spec.OutputPath;
+        }
 
-            const { ResultPath } = spec;
-            this.resultPath = ResultPath;
+        run(data) {
+            const input = this.filterInput(data);
+
+            const resolved = ({ output, next }) => {
+                output = this.filterResult(input, output);
+                output = this.filterOutput(output);
+                return { output, next };
+            };
+
+            const rejected = error => {
+                return Promise.reject(error);
+            };
+
+            return super.run(input).then(resolved, rejected);
+        }
+
+        filterInput(input) {
+            const { inputPath = '$' } = this;
+            /**
+             * Per: https://states-language.net/spec.html#filters
+             *
+             * If the value of InputPath is null, that means that the raw input is
+             * discarded, and the effective input for the state is an empty JSON
+             * object, {}.
+             */
+            if (inputPath === null) {
+                return {};
+            }
+
+            return PathUtils.query(input, inputPath);
         }
 
         filterResult(input, result) {
-            const { name, resultPath } = this;
+            const { resultPath } = this;
 
             // No mapping or merging of data necessary.
             if (resultPath === undefined) {
@@ -108,7 +140,7 @@ function ResultFilter(Base) {
                     return target = child;
                 }
 
-                const error = new Error(`Invalid ResultPath for state "${name}". Provided "${resultPath}", but ResultPath must be a Reference Path (https://states-language.net/spec.html#path).`);
+                const error = new Error(`Invalid ResultPath "${resultPath}". ResultPath must be a Reference Path (https://states-language.net/spec.html#path).`);
                 error.name = 'States.ResultPathMatchFailure';
                 throw error;
 
@@ -117,9 +149,26 @@ function ResultFilter(Base) {
             return input;
         }
 
+        filterOutput(output) {
+            const { outputPath = '$' } = this;
+
+            /**
+             * Per: https://states-language.net/spec.html#filters
+             *
+             * If the value of OutputPath is null, that means the input and result
+             * are discarded, and the effective output from the state is an empty
+             * JSON object, {}.
+             */
+            if (outputPath === null) {
+                return {};
+            }
+
+            return PathUtils.query(output, outputPath);
+        }
+
     };
 
 }
 
 
-module.exports = ResultFilter;
+module.exports = Filter;

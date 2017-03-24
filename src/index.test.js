@@ -2,7 +2,8 @@ const test = require('ava');
 const Machine = require('./index');
 
 
-test('Machine (Timeout)', t => {
+
+test('Graph', t => {
 
     const json = {
         StartAt: 'One',
@@ -10,21 +11,133 @@ test('Machine (Timeout)', t => {
         States: {
             One: {
                 Type: 'Wait',
-                Seconds: 3,
+                Seconds: 0,
                 Next: 'Two',
             },
             Two: {
-                Type: 'Succeed'
+                Type: 'Pass',
+                Result: {
+                    'abc': 123,
+                },
+                ResultPath: '$.Result',
+                Next: 'Seven',
+            },
+            Seven: {
+                Type: 'Task',
+                TimeoutSeconds: 1,
+                Retry: [
+                    {
+                        ErrorEquals: [ 'States.Timeout' ],
+                        MaxAttempts: 4,
+                    }
+                ],
+                Catch: [
+                    {
+                        ErrorEquals: [ 'States.Timeout' ],
+                        Next: 'Four'
+                    },
+                    {
+                        ErrorEquals: [ 'States.ALL' ],
+                        Next: 'Six'
+                    }
+                ],
+                Next: 'Three',
+            },
+            Three: {
+                Type: 'Choice',
+                Choices: [
+                    {
+                        Or: [
+                            {
+                                Variable: '$.abc',
+                                NumericEquals: 124,
+                                // Next: 'Four'
+                            },
+                            {
+                                Variable: '$.abc',
+                                NumericEquals: 123,
+                                // Next: 'Five'
+                            }
+                        ],
+                        Next: 'Five'
+                    }
+
+                ],
+                Default: 'Six'
+            },
+            Four: {
+                Type: 'Fail',
+            },
+            Five: {
+                Type: 'Parallel',
+                Branches: [
+                    {
+                        StartAt: 'FiveOne',
+                        States: {
+                            FiveOne: {
+                                Type: 'Wait',
+                                Seconds: 0,
+                                End: true
+                            },
+                        }
+                    },
+                    {
+                        StartAt: 'FiveTwo',
+                        States: {
+                            FiveTwo: {
+                                Type: 'Wait',
+                                Seconds: 0,
+                                End: true
+                            },
+                        }
+                    }
+                ],
+                Catch: [
+                ],
+                Next: 'Six',
+            },
+            Six: {
+                Type: 'Succeed',
             },
         },
     };
 
     const machine = Machine.create(json);
-    const input = {};
+    const input = { SleepSeconds: [ /*2, 2, 2*/ ] };
 
-    t.throws(machine.run(input)).then(output => {
-        t.is(typeof output, 'object');
-        t.is(output.Error, 'States.Timeout');
+
+    // console.log(machine.graph);
+    let start = process.hrtime();
+    return machine.run(input).then(output => {
+
+        console.log('Cold start', process.hrtime(start));
+        console.log(output);
+
+        start = process.hrtime();
+        return machine.run(input).then(() => {
+            console.log('Warm start', process.hrtime(start));
+
+            start = process.hrtime();
+            return machine.run(input).then(() => {
+                console.log('Warm start', process.hrtime(start));
+
+                start = process.hrtime();
+                return machine.run(input).then(() => {
+                    console.log('Warm start', process.hrtime(start));
+
+                    start = process.hrtime();
+                    return machine.run(input).then(() => {
+                        console.log('Warm start', process.hrtime(start));
+                    });
+
+                });
+
+            });
+
+        });
+
     });
+
+
 
 });

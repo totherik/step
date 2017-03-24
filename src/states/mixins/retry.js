@@ -1,98 +1,89 @@
-const mixins = require('./index');
-const Runner = require('./runner');
-const ResultFilter = require('./resultfilter');
-const ErrorMatcher = require('./errormatcher');
-
-
-class Retrier extends mixins(ErrorMatcher) {
-
-    constructor(name, spec, factory) {
-        super(name, spec, factory);
-        
-        const { IntervalSeconds = 1, MaxAttempts = 3, BackoffRate = 2.0 } = spec;
-        this.intervalSeconds = IntervalSeconds;
-        this.maxAttempts = MaxAttempts;
-        this.backoffRate = BackoffRate;
-    }
-
-    canContinue(attempts) {
-        return attempts <= this.maxAttempts;
-    }
-
-    getDelay(attempts) {
-        return this.intervalSeconds + (attempts * this.backoffRate);
-    }
-
-}
 
 
 function Retry(Base) {
 
     return class Retry extends Base {
 
-        constructor(name, spec, factory) {
-            super(name, spec, factory);
-
-            const { Retry = [] } = spec;
-            this.retriers = Retry.map(spec => new Retrier('', spec, factory));
+        constructor(spec) {
+            super(spec);
+            this.retriers = spec.Retry || [];
+            this.catchers = spec.Catch || [];
         }
 
-        retry(fn, input) {
+        run(input) {
+            const task = () => super.run(input);
+            return this.retry(task).catch(error => this.catch(error));
+        }
+
+        retry(task) {
             const counts = new WeakMap();
 
-            const retry = output => {
-                const retrier = this._match(output);
-                if (!retrier) {
-                    return Promise.reject(output);
-                }
+            const retry = error => {
+                const retrier = this.match(this.retriers, error, { MaxAttempts: 0 });
+                const { MaxAttempts = 3, IntervalSeconds = 1, BackoffRate = 2.0 } = retrier;
 
-                let attempts = counts.get(retrier) || 1;
-                if (!retrier.canContinue(attempts)) {
-                    return Promise.reject(output);
+                const attempts = counts.get(retrier) || 0;
+                const seconds = IntervalSeconds + (attempts * BackoffRate);
+
+                if (attempts >= MaxAttempts) {
+                    return Promise.reject(error);
                 }
 
                 counts.set(retrier, attempts + 1);
-
-                const seconds = retrier.getDelay(attempts - 1);
-                return wait(input, seconds).then(run);
+                return wait(run, seconds * 1000);
             };
 
-            const wait = (value, seconds) => {
+            const wait = (fn, duration) => {
                 return new Promise(resolve => {
-                    setTimeout(resolve, seconds * 1000, value);
-                });
+                    setTimeout(resolve, duration);
+                }).then(fn);
             };
 
-            const run = input => {
-                return fn(input).catch(retry);
+            const run = () => {
+                return task().catch(retry);
             };
 
-            return run(input);
+            return run();
         }
 
-        _match(error) {
-            return this.retriers.find((retrier, index, retriers) => {
-                if (retrier.match(error)) {
+        catch(error) {
+            const catcher = this.match(this.catchers, error);
+
+            if (catcher) {
+                return {
+                    output: error,
+                    next: catcher.Next,
+                };
+            }
+
+            return Promise.reject(error);
+        }
+
+        match(rules, { Error }, fallback) {
+            const matcher = ({ ErrorEquals }, index, rules) => {
+                if (ErrorEquals.includes(Error)) {
                     return true;
                 }
 
                 /**
-                 * 'The reserved name “States.ALL” in a Retrier’s “ErrorEquals”
-                 * field is a wild-card and matches any Error Name. Such a value MUST
-                 * appear alone in the “ErrorEquals” array and MUST appear in the
-                 * last Retrier in the “Retry” array.'
+                 * 'The reserved name “States.ALL” appearing in a Catcher's “ErrorEquals”
+                 * field is a wild-card and matches any Error Name. Such a value MUST appear
+                 * alone in the “ErrorEquals” array and MUST appear in the last Catcher
+                 * in the “Catch” array.'
                  *
                  * TODO: See if this rule can be enforced during validation.
                  */
-                if (index === retriers.length - 1 && retrier.isWildcard()) {
+                if (index === rules.length - 1 && ErrorEquals.length === 1 && ErrorEquals[0] === 'States.ALL') {
                     return true;
                 }
 
                 return false;
-            });
+            };
+
+            return rules.find(matcher) || fallback;
         }
 
-    }
+    };
 
 }
 

@@ -1,24 +1,14 @@
-const mixins = require('./mixins');
-const State = require('./mixins/state');
-const InputFilter = require('./mixins/inputfilter');
-const OutputFilter = require('./mixins/outputfilter');
+const  { mixin, Filter } = require('./mixins');
 
 
-class Succeed extends mixins(InputFilter, OutputFilter, State) {
+class Succeed extends mixin(Filter) {
 
-    constructor(name, spec, factory) {
-        super(name, spec, factory);
-    }
-
-    run(input) {
-        return Promise.resolve(input)
-            .then(input => this.filterInput(input))
-            .then(filtered => super.run(filtered))
-            .then(output => this.filterOutput(output));
+    constructor(spec) {
+        super(spec);
     }
 
     _run(input) {
-        return Promise.resolve(input);
+        return Promise.resolve({ output: input });
     }
 
 }

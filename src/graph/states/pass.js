@@ -10,7 +10,7 @@ class Pass extends mixin(Filter) {
 
     _run(input) {
         const { result = input } = this;
-        return Promise.resolve(result);
+        return Promise.resolve({ output: result });
     }
 
 }

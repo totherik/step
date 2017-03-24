@@ -24,7 +24,13 @@ test('Graph', t => {
             },
             Seven: {
                 Type: 'Task',
-                TimeoutSeconds: 3,
+                TimeoutSeconds: 1,
+                Retry: [
+                    {
+                        ErrorEquals: [ 'States.Timeout' ],
+                        MaxAttempts: 4,
+                    }
+                ],
                 Catch: [
                     {
                         ErrorEquals: [ 'States.Timeout' ],
@@ -97,15 +103,15 @@ test('Graph', t => {
     };
 
     const machine = Machine.create(json);
-    const input = { SleepSeconds: [] };
+    const input = { SleepSeconds: [ /*2, 2, 2*/ ] };
 
 
     // console.log(machine.graph);
     let start = process.hrtime();
-    return machine.run(input).then(() => {
+    return machine.run(input).then(output => {
 
         console.log('Cold start', process.hrtime(start));
-        console.log(machine.stack);
+        console.log(output);
 
         start = process.hrtime();
         return machine.run(input).then(() => {

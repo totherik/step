@@ -1,8 +1,8 @@
 const mock = require('./__mocktask__');
-const  { mixin, Timeout, Catch, Filter } = require('./mixins');
+const  { mixin, Timeout, Retry, Filter } = require('./mixins');
 
 
-class Task extends mixin(Timeout, Catch, Filter) {
+class Task extends mixin(Timeout, Retry, Filter) {
 
     constructor(spec) {
         super(spec);
@@ -10,9 +10,7 @@ class Task extends mixin(Timeout, Catch, Filter) {
     }
 
     _run(input) {
-        // TODO: Retry
-        const exec = mock(this);
-        return exec(input);
+        return mock(input).then(output => ({ output }));
     }
 
 }

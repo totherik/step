@@ -9,24 +9,22 @@ class Choice extends mixin(Filter) {
         this.default = spec.Default;
         this.choices = (spec.Choices || []).map(choice => {
             const rule = ChoiceRule.create(choice);
-            const next = choice.Next;
-            return [ rule, next ];
+            const destination = choice.Next;
+            return [ rule, destination ];
         });
     }
 
     _run(input) {
-        let goto = this.default;
+        let next = this.default;
 
-        for (const [ rule, next ] of this.choices) {
+        for (const [ rule, destination ] of this.choices) {
             if (rule(input)) {
-                goto = next;
+                next = destination;
                 break;
             }
         }
 
-        this.next = goto;
-
-        return Promise.resolve(input);
+        return Promise.resolve({ output: input, next });
     }
 
 }

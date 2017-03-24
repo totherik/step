@@ -15,9 +15,10 @@ function Filter(Base) {
         run(data) {
             const input = this.filterInput(data);
 
-            const resolved = result => {
-                const output = this.filterResult(input, result);
-                return this.filterOutput(output);
+            const resolved = ({ output, next }) => {
+                output = this.filterResult(input, output);
+                output = this.filterOutput(output);
+                return { output, next };
             };
 
             const rejected = error => {

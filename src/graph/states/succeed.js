@@ -8,7 +8,7 @@ class Succeed extends mixin(Filter) {
     }
 
     _run(input) {
-        return Promise.resolve(input);
+        return Promise.resolve({ output: input });
     }
 
 }

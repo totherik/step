@@ -1,46 +1,31 @@
 
 
-function defer() {
-    let resolve, reject;
-
-    const promise = new Promise((a, b) => {
-        resolve = a;
-        reject = b;
-    });
-
-    return {
-        promise,
-        resolve,
-        reject,
-    };
-}
-
 function State(Base) {
 
     return class State extends Base {
 
         constructor(spec) {
             super(spec);
+            this.name = spec.Name;
+            this.type = spec.Type;
+            this.comment = spec.Comment;
             this.next = spec.Next;
-            this.deferred = defer(); // Get yer pitchforks! Someone used deferred and it's an "antipattern"!
         }
 
         run(data) {
-            const { deferred: { promise, resolve, reject } } = this;
-            this._run(data).then(resolve, reject);
-            return promise;
+            const defaults = { next: this.next };
+
+            const start = process.hrtime();
+            const merge = result => {
+                console.log(this.name, this.type, '_run', process.hrtime(start));
+                return Object.assign(defaults, result);
+            };
+
+            return this._run(data).then(merge);
         }
 
         _run(input) {
-            return Promise.reject('Not implemented.');
-        }
-
-        getNext() {
-            // Don't read edge until value resolves. Some decisions, such
-            // as Catch, are determined by outcome of State.
-            const { next, deferred: { promise } } = this;
-            const fulfilled = () => next;
-            return promise.then(fulfilled, fulfilled);
+            return Promise.reject({ Error: 'Not implemented.' });
         }
 
     };

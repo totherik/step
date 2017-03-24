@@ -1,7 +1,7 @@
-const  { mixin, Catch, Filter } = require('./mixins');
+const  { mixin, Retry, Filter } = require('./mixins');
 
 
-class Parallel extends mixin(Catch, Filter) {
+class Parallel extends mixin(Retry, Filter) {
 
     constructor(spec, Machine) {
         super(spec);
@@ -10,9 +10,8 @@ class Parallel extends mixin(Catch, Filter) {
     }
 
     _run(input) {
-        // TODO: Retry
         const tasks = this.branches.map(machine => machine.run(input));
-        return Promise.all(tasks);
+        return Promise.all(tasks).then(output => ({ output }));
     }
 
 }

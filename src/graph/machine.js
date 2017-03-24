@@ -1,5 +1,6 @@
 const Graph = require('./graph');
 const Factory = require('./factory');
+const { async } = require('../util');
 
 
 class Machine {
@@ -52,31 +53,31 @@ class Machine {
     }
 
     run(input) {
-        this.stack = [];
-        return this._run(this.startAt, input);
+        const { graph, startAt } = this;
+        const run = this._runner();
+        return run(graph, startAt, input);
     }
 
-    _run(vertexA, input) {
-        const { graph } = this;
-        const impl = Factory.create(vertexA, Machine);
-        const start = process.hrtime();
+    _runner() {
+        return async(function *(graph, startAt, input) {
+            let vertexA = startAt;
+            let result = input;
+            let start = process.hrtime();
 
-        const fulfilled = fn => {
-            return result => {
-                this.stack.push([ vertexA.Name, process.hrtime(start) ]);
+            while (vertexA) {
+                const state = Factory.create(vertexA, Machine);
+                const { output, next } = yield state.run(result);
 
-                const resolve = next => {
-                    const vertexB = graph.getVertexAt(vertexA, next);
-                    return vertexB ? this._run(vertexB, result) : fn(result);
-                };
+                console.log(vertexA.Name, vertexA.Type, 'run', process.hrtime(start));
+                start = process.hrtime();
 
-                return impl.getNext().then(resolve);
-            };
-        }
+                const vertexB = graph.getVertexAt(vertexA, next);
+                vertexA = vertexB;
+                result = output;
+            }
 
-        const resolved = fulfilled(output => output);
-        const rejected = fulfilled(output => Promise.reject(output));
-        return impl.run(input).then(resolved, rejected);
+            return result;
+        });
     }
 
 }

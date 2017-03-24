@@ -10,6 +10,8 @@ class Wait extends mixin(Filter) {
         this.secondsPath = spec.SecondsPath;
         this.timestamp = spec.Timestamp;
         this.timestampPath = spec.TimestampPath;
+
+        this.timeout = global.setTimeout
     }
 
     _run(input) {
@@ -22,13 +24,13 @@ class Wait extends mixin(Filter) {
             timestamp = PathUtils.query(input, timestampPath);
         }
 
-        if (typeof secondsPath === 'string') {
-            seconds = PathUtils.query(input, secondsPath);
-        }
-
         if (typeof timestamp === 'string') {
             const then = new Date(timestamp);
             milliseconds = then - Date.now();
+        }
+
+        if (typeof secondsPath === 'string') {
+            seconds = PathUtils.query(input, secondsPath);
         }
 
         if (typeof seconds === 'number') {
@@ -36,7 +38,7 @@ class Wait extends mixin(Filter) {
         }
 
         return new Promise(resolve => {
-            setTimeout(resolve, milliseconds, input);
+            setTimeout(resolve, milliseconds, { output: input });
         });
     }
 

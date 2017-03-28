@@ -21,10 +21,10 @@ class Task extends mixin(Timeout, Retry, Filter) {
                 result: true,
             };
 
-            const { actions } = openwhisk({ ignore_certs: true });
+            const { actions } = openwhisk({ ignore_certs: true /* for testing */ });
             return actions.invoke(options).then(output => ({ output }));
         }
-        
+
         return mock(input).then(output => ({ output }));
     }
 

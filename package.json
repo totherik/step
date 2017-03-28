@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/totherik/step#readme",
   "devDependencies": {
-    "ava": "^0.18.2"
+    "ava": "^0.18.2",
+    "openwhisk": "^3.4.0"
   },
   "dependencies": {
     "jsonpath": "^0.2.11",

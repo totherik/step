@@ -2,7 +2,6 @@ const test = require('ava');
 const Machine = require('./index');
 
 
-
 test('Graph', t => {
 
     const json = {
@@ -24,12 +23,12 @@ test('Graph', t => {
             },
             Seven: {
                 Type: 'Task',
-                Resource: 'foo',
+                Resource: 'step_test_action',
                 TimeoutSeconds: 1,
                 Retry: [
                     {
                         ErrorEquals: [ 'States.Timeout' ],
-                        MaxAttempts: 4,
+                        MaxAttempts: 2,
                     }
                 ],
                 Catch: [
@@ -50,12 +49,12 @@ test('Graph', t => {
                     {
                         Or: [
                             {
-                                Variable: '$.abc',
+                                Variable: '$.Result.abc',
                                 NumericEquals: 124,
                                 // Next: 'Four'
                             },
                             {
-                                Variable: '$.abc',
+                                Variable: '$.Result.abc',
                                 NumericEquals: 123,
                                 // Next: 'Five'
                             }
@@ -100,47 +99,20 @@ test('Graph', t => {
                 Next: 'Six',
             },
             Six: {
+                Type: 'Pass',
+                // InputPath: '$[0]',
+                Result: 'bar',
+                ResultPath: '$.foo',
+                Next: 'Eight',
+            },
+            Eight: {
                 Type: 'Succeed',
             },
         },
     };
 
+    const input = { SleepSeconds: [ /*2, 2, 2, 2, 2*/ ] };
     const machine = Machine.create(json);
-    const input = { SleepSeconds: [ /*2, 2, 2*/ ] };
-
-
-    // console.log(machine.graph);
-    let start = process.hrtime();
-    return machine.run(input).then(output => {
-
-        console.log('Cold start', process.hrtime(start));
-        console.log(output);
-
-        start = process.hrtime();
-        return machine.run(input).then(() => {
-            console.log('Warm start', process.hrtime(start));
-
-            start = process.hrtime();
-            return machine.run(input).then(() => {
-                console.log('Warm start', process.hrtime(start));
-
-                start = process.hrtime();
-                return machine.run(input).then(() => {
-                    console.log('Warm start', process.hrtime(start));
-
-                    start = process.hrtime();
-                    return machine.run(input).then(() => {
-                        console.log('Warm start', process.hrtime(start));
-                    });
-
-                });
-
-            });
-
-        });
-
-    });
-
-
+    return machine.run(input);
 
 });

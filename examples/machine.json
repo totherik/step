@@ -1,0 +1,113 @@
+{
+  "StartAt": "One",
+  "TimeoutSeconds": 1,
+  "States": {
+    "One": {
+      "Type": "Wait",
+      "Seconds": 1,
+      "Next": "Two"
+    },
+    "Two": {
+      "Type": "Pass",
+      "Result": {
+        "abc": 123
+      },
+      "ResultPath": "$",
+      "Next": "Seven"
+    },
+    "Seven": {
+      "Type": "Task",
+      "Resource": "step_test_action",
+      "TimeoutSeconds": 1,
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.Timeout"
+          ],
+          "MaxAttempts": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.Timeout"
+          ],
+          "Next": "Four"
+        },
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Six"
+        }
+      ],
+      "Next": "Three"
+    },
+    "Three": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Or": [
+            {
+              "Variable": "$.abc",
+              "NumericEquals": 124
+            },
+            {
+              "Variable": "$.abc",
+              "NumericEquals": 123
+            }
+          ],
+          "Next": "Five"
+        }
+      ],
+      "Default": "Six"
+    },
+    "Four": {
+      "Type": "Fail",
+      "Error": "States.Error",
+      "Cause": "A cause."
+    },
+    "Five": {
+      "Type": "Parallel",
+      "Branches": [
+        {
+          "StartAt": "FiveOne",
+          "States": {
+            "FiveOne": {
+              "Type": "Wait",
+              "Seconds": 1,
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "FiveTwo",
+          "States": {
+            "FiveTwo": {
+              "Type": "Wait",
+              "Seconds": 2,
+              "Next": "FiveFour"
+            },
+            "FiveFour": {
+              "Type": "Pass",
+              "Result": 456,
+              "ResultPath": "$.def",
+              "End": true
+            }
+          }
+        }
+      ],
+      "Catch": [],
+      "Next": "Six"
+    },
+    "Six": {
+      "Type": "Pass",
+      "Result": "bar",
+      "ResultPath": "$.foo",
+      "Next": "Eight"
+    },
+    "Eight": {
+      "Type": "Succeed"
+    }
+  }
+}

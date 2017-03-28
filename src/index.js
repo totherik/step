@@ -1,10 +1,11 @@
 const Graph = require('./graph');
 const Schema = require('./schema');
-const { async } = require('./util');
+const { async, clone } = require('./util');
 const Factory = require('./states/factory');
+const { EventEmitter } = require('events');
 
 
-class Machine {
+class Machine extends EventEmitter {
 
     static create(json) {
         Schema.validate(json);
@@ -12,6 +13,7 @@ class Machine {
     }
 
     constructor({ StartAt, States }) {
+        super();
         this.graph = new Graph();
         this.states = States;
         this.startAt = this.build(StartAt);
@@ -57,7 +59,20 @@ class Machine {
     run(input) {
         const { graph, startAt } = this;
         const run = this._runner();
-        return run(graph, startAt, input);
+
+        this.emit('ExecutionStarted', {
+            input,
+        });
+
+        const resolve = output => {
+            this.emit('ExecutionCompleted', {
+                output,
+            });
+
+            return output;
+        };
+
+        return run(graph, startAt, input).then(resolve);
     }
 
     _runner() {
@@ -66,16 +81,44 @@ class Machine {
             let result = input;
 
             while (currentState) {
+                const { Name: name, Type: type } = currentState;
+
+                this.emit('StateEntered', {
+                    name,
+                    input: result,
+                });
+
                 const state = Factory.create(currentState, Machine);
                 const { output, next } = yield state.run(result);
+
+                if (output instanceof Error) {
+                    const error = {
+                        Name: output.message,
+                        Cause: output.stack,
+                    };
+
+                    this.emit('StateExited', {
+                        name,
+                        output: error,
+                    });
+
+                    return error;
+                }
+
                 const nextState = graph.getVertexAt(currentState, next);
                 currentState = nextState;
-                result = output;
+                result = clone(output);
+
+                this.emit('StateExited', {
+                    name,
+                    output,
+                });
             }
 
             return result;
-        });
+        }, this);
     }
+
 
 }
 

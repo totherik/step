@@ -17,10 +17,10 @@ function proceed(iterable, verb, arg) {
 };
 
 
-function async(generator) {
+function async(generator, context) {
     return (...args) => {
         try {
-            const iterable = generator(...args);
+            const iterable = generator.call(context, ...args);
             return proceed(iterable, 'next');
         } catch (error) {
             return Promise.reject(error);
@@ -29,6 +29,13 @@ function async(generator) {
 }
 
 
+function clone(obj) {
+    // Lolololol.
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
 module.exports = {
     async,
+    clone,
 };

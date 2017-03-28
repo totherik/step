@@ -3,7 +3,7 @@
 1. Ensure your environment is setup.
 ```bash
 $ . init.sh
-Found '/Users/ertoth/PayPal/src/git/step/.nvmrc' with version <v6.9.1>
+Found '.nvmrc' with version <v6.9.1>
 Now using node v6.9.1 (npm v3.10.8)
 ```
 

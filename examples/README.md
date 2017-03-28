@@ -15,5 +15,5 @@ ok: updated action step_test_action
 
 3. Run the example.
 ```bash
-$ node example/machine.js
+$ node examples/machine.js
 ```

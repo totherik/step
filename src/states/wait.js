@@ -10,14 +10,12 @@ class Wait extends mixin(Filter) {
         this.secondsPath = spec.SecondsPath;
         this.timestamp = spec.Timestamp;
         this.timestampPath = spec.TimestampPath;
-
-        this.timeout = global.setTimeout
     }
 
     _run(input) {
         // Since there can only ever be one of these set, this code could
         // probably stand to be tightened up a bit.
-        const {  seconds, secondsPath, timestamp, timestampPath } = this;
+        let { seconds, secondsPath, timestamp, timestampPath } = this;
         let milliseconds = 0;
 
         if (typeof timestampPath === 'string') {

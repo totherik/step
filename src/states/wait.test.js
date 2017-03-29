@@ -1,4 +1,4 @@
-const test = require('ava').only;
+const test = require('ava');
 const Wait = require('./wait');
 
 

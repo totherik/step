@@ -1,2 +1,4 @@
 env.sh
 node_modules
+coverage
+.nyc_output

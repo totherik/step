@@ -7,7 +7,7 @@
     "src": "src"
   },
   "scripts": {
-    "test": "ava"
+    "test": "nyc --reporter=html ava"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/totherik/step#readme",
   "devDependencies": {
     "ava": "^0.18.2",
+    "nyc": "^10.2.0",
     "openwhisk": "^3.4.0"
   },
   "dependencies": {

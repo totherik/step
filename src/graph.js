@@ -31,27 +31,19 @@ class Graph {
     removeVertex(vertexA) {
         const { adjacencies } = this;
 
-        if (adjacencies.has(vertexA)) {
-            const edgesA = adjacencies.get(vertexA);
-            for (let [ _, vertexB ] of edgesA.entries()) {
-
-                if (adjacencies.has(vertexB)) {
-                    const edgesB = adjacencies.get(vertexB);
-                    for (let [ edge, vertex ] of edgesB.values()) {
-
-                        if (vertex === vertexA) {
-                            edgesB.delete(edge);
-                            break;
-                        }
-
-                    }
-                }
-
-            }
-            return !!adjacencies.delete(vertexA);
+        if (!adjacencies.has(vertexA)) {
+            return false;
         }
 
-        return false;
+        for (let [ _ , edges ] of adjacencies.entries()) {
+            for (let [ edge, vertex ] of edges.entries()) {
+                if (vertex === vertexA) {
+                    edges.delete(edge);
+                }
+            }
+        }
+
+        return adjacencies.delete(vertexA);
     }
 
     addEdge(vertexA, vertexB, edgeValue) {
@@ -66,6 +58,17 @@ class Graph {
         }
 
         const edgesA = adjacencies.get(vertexA);
+
+        // Delete existing edges between the two vertices. May
+        // not want to do this and allow multiple edges with multiple
+        // values, but for now only allow one.
+        for (const [ edge, vertex ] of edgesA) {
+            if (vertex === vertexB) {
+                edgesA.delete(edge);
+                break;
+            }
+        }
+
         edgesA.set(edgeValue, vertexB);
     }
 
@@ -73,9 +76,10 @@ class Graph {
         const { adjacencies } = this;
 
         if (adjacencies.has(vertexA)) {
-            for (const [ edge, vertex ] of adjacencies.get(vertexA)) {
-                if (vertexB === vertex) {
-                    return !!adjacencies.delete(edge);
+            const edgesA = adjacencies.get(vertexA);
+            for (const [ edge, vertex ] of edgesA) {
+                if (vertex === vertexB) {
+                    return edgesA.delete(edge);
                 }
             }
         }

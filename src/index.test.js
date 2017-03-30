@@ -2,7 +2,7 @@ const test = require('ava');
 const Machine = require('./index');
 
 
-test.skip('Graph', t => {
+test('Graph', t => {
 
     const json = {
         StartAt: 'One',
@@ -23,7 +23,7 @@ test.skip('Graph', t => {
             },
             Seven: {
                 Type: 'Task',
-                Resource: 'step_test_action',
+                Resource: '__mockresource__',
                 TimeoutSeconds: 1,
                 Retry: [
                     {
@@ -49,14 +49,12 @@ test.skip('Graph', t => {
                     {
                         Or: [
                             {
-                                Variable: '$.Result.abc',
+                                Variable: '$.abc',
                                 NumericEquals: 124,
-                                // Next: 'Four'
                             },
                             {
-                                Variable: '$.Result.abc',
+                                Variable: '$.abc',
                                 NumericEquals: 123,
-                                // Next: 'Five'
                             }
                         ],
                         Next: 'Five'
@@ -87,8 +85,10 @@ test.skip('Graph', t => {
                         StartAt: 'FiveTwo',
                         States: {
                             FiveTwo: {
-                                Type: 'Wait',
-                                Seconds: 1,
+                                Type: 'Pass',
+                                Result: {
+                                    def: 456
+                                },
                                 End: true
                             },
                         }
@@ -100,7 +100,6 @@ test.skip('Graph', t => {
             },
             Six: {
                 Type: 'Pass',
-                // InputPath: '$[0]',
                 Result: 'bar',
                 ResultPath: '$.foo',
                 Next: 'Eight',
@@ -111,8 +110,20 @@ test.skip('Graph', t => {
         },
     };
 
+    const start = Date.now();
+
     const input = { SleepSeconds: [ /*2, 2, 2, 2, 2*/ ] };
     const machine = Machine.create(json);
-    return machine.run(input);
+    return machine.run(input).then((output) => {
+        // Should take ~2 seconds based on the Wait states.
+        const duration = Date.now() - start;
+        t.true(duration > 2000);
+        t.true(duration < 2200);
+
+        t.true(Array.isArray(output));
+        t.is(output.length, 2);
+        t.deepEqual(output[0], { abc: 123 });
+        t.deepEqual(output[1], { def: 456 });
+    });
 
 });

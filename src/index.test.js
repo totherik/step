@@ -24,23 +24,6 @@ test('Graph', t => {
             Seven: {
                 Type: 'Task',
                 Resource: '__mockresource__',
-                TimeoutSeconds: 1,
-                Retry: [
-                    {
-                        ErrorEquals: [ 'States.Timeout' ],
-                        MaxAttempts: 2,
-                    }
-                ],
-                Catch: [
-                    {
-                        ErrorEquals: [ 'States.Timeout' ],
-                        Next: 'Four'
-                    },
-                    {
-                        ErrorEquals: [ 'States.ALL' ],
-                        Next: 'Six'
-                    }
-                ],
                 Next: 'Three',
             },
             Three: {
@@ -61,12 +44,7 @@ test('Graph', t => {
                     }
 
                 ],
-                Default: 'Six'
-            },
-            Four: {
-                Type: 'Fail',
-                Error: 'States.Error',
-                Cause: 'A cause.',
+                Default: 'Four'
             },
             Five: {
                 Type: 'Parallel',
@@ -94,15 +72,12 @@ test('Graph', t => {
                         }
                     }
                 ],
-                Catch: [
-                ],
-                Next: 'Six',
-            },
-            Six: {
-                Type: 'Pass',
-                Result: 'bar',
-                ResultPath: '$.foo',
                 Next: 'Eight',
+            },
+            Four: {
+                Type: 'Fail',
+                Error: 'States.Error',
+                Cause: 'A cause.',
             },
             Eight: {
                 Type: 'Succeed',

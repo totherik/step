@@ -2,7 +2,7 @@ const test = require('ava');
 const Machine = require('./index');
 
 
-test('Graph', t => {
+test.skip('Graph', t => {
 
     const json = {
         StartAt: 'One',

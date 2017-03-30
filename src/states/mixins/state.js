@@ -19,7 +19,18 @@ function State(Base) {
                 return Object.assign(defaults, result);
             };
 
-            return this._run(data).then(merge);
+            const unwrap = error => {
+                if (error instanceof Error) {
+                    error = {
+                        Name: error.message,
+                        Cause: error.stack,
+                    };
+                }
+                const result = merge({ output: error });
+                return Promise.reject(result);
+            };
+
+            return this._run(data).then(merge, unwrap);
         }
 
         _run(input) {

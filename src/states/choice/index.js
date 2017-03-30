@@ -1,4 +1,4 @@
-const ChoiceRule = require('./rule');
+const Rule = require('./rule');
 const { mixin, Filter } = require('../mixins');
 
 
@@ -7,8 +7,10 @@ class Choice extends mixin(Filter) {
     constructor(spec) {
         super(spec);
         this.default = spec.Default;
-        this.choices = (spec.Choices || []).map(choice => {
-            const rule = ChoiceRule.create(choice);
+
+        const choices = spec.Choices || [];
+        this.choices = choices.map(choice => {
+            const rule = Rule.create(choice);
             const destination = choice.Next;
             return [ rule, destination ];
         });

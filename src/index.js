@@ -91,20 +91,6 @@ class Machine extends EventEmitter {
                 const state = Factory.create(currentState, Machine);
                 const { output, next } = yield state.run(result);
 
-                if (output instanceof Error) {
-                    const error = {
-                        Name: output.message,
-                        Cause: output.stack,
-                    };
-
-                    this.emit('StateExited', {
-                        name,
-                        output: error,
-                    });
-
-                    return error;
-                }
-
                 const nextState = graph.getVertexAt(currentState, next);
                 currentState = nextState;
                 result = clone(output);

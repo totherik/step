@@ -13,7 +13,11 @@ class Task extends mixin(Timeout, Retry, Filter) {
     _run(input) {
         const { resource } = this;
 
-        if (typeof openwhisk === 'function') {
+        if (resource === '__mockresource__') {
+            return mock(input).then(output => ({ output }));
+        }
+
+        if (process.env['__OW_API_KEY'] && process.env['__OW_API_HOST'] && typeof openwhisk === 'function') {
             const options = {
                 name: resource,
                 params: input,
@@ -25,7 +29,7 @@ class Task extends mixin(Timeout, Retry, Filter) {
             return actions.invoke(options).then(output => ({ output }));
         }
 
-        return mock(input).then(output => ({ output }));
+        return Promise.reject(new Error(`No task implementation provided to execute resource ${resource}.`));
     }
 
 }

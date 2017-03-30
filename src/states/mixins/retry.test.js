@@ -152,3 +152,60 @@ test('Retry, unmatched', t => {
     });
 
 });
+
+
+test('Retry, no max attempts', t => {
+
+    const spec = {
+        Retry: [
+            {
+                ErrorEquals: [ 'States.Timeout' ],
+            },
+        ],
+    };
+
+    const input = {
+        Errors: [ 'States.Timeout' ],
+        Result: {
+            foo: 'bar',
+        },
+    };
+
+    const retry = new Retry(spec);
+    return retry.run(input).then(({ output }) => {
+        t.is(output, input.Result);
+    });
+
+});
+
+
+test('Catch', t => {
+
+    const spec = {
+        Retry: [
+            {
+                ErrorEquals: [ 'States.Timeout' ],
+            },
+        ],
+        Catch: [
+            {
+                ErrorEquals: [ 'States.ALL' ],
+                Next: 'Catch'
+            }
+        ]
+    };
+
+    const input = {
+        Errors: [ 'States.ALL' ],
+        Result: {
+            foo: 'bar',
+        },
+    };
+
+    const retry = new Retry(spec);
+    return retry.run(input).then(({ output, next }) => {
+        t.is(output.Error, 'States.ALL');
+        t.is(next, spec.Catch[0].Next);
+    });
+
+});

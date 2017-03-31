@@ -19,7 +19,7 @@ if [ ! -f $FILE ]; then
 fi
 
 
-# Initialize env variables. (Used by the )
+# Initialize env variables. (Used by the openwhisk js client.)
 source $FILE
 
 # Ensure we're using the right Node runtime version.

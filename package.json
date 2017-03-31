@@ -4,7 +4,8 @@
   "description": "An Amazon States Language implementation in JavaScript.",
   "main": "src/index.js",
   "directories": {
-    "src": "src"
+    "src": "src",
+    "examples": "examples",
   },
   "scripts": {
     "test": "ava",

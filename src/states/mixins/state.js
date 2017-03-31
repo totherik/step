@@ -22,7 +22,7 @@ function State(Base) {
             const unwrap = error => {
                 if (error instanceof Error) {
                     error = {
-                        Name: error.message,
+                        Error: error.message,
                         Cause: error.stack,
                     };
                 }

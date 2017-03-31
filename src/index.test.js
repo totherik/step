@@ -25,6 +25,12 @@ test('Graph', t => {
                 Type: 'Task',
                 Resource: '__mockresource__',
                 Next: 'Three',
+                Catch: [
+                    {
+                        ErrorEquals: [ 'States.ALL' ],
+                        Next: 'Four',
+                    },
+                ],
             },
             Three: {
                 Type: 'Choice',

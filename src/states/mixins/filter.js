@@ -15,17 +15,32 @@ function Filter(Base) {
         run(data) {
             const input = this.filterInput(data);
 
-            const resolved = ({ output, next }) => {
-                output = this.filterResult(input, output);
-                output = this.filterOutput(output);
-                return { output, next };
+            const resolved = (result) => {
+                let output;
+                try {
+
+                    output = this.filterResult(input, result.output);
+                    output = this.filterOutput(output);
+                    return Object.assign(result, { output });
+
+                } catch (error) {
+                    // TODO: Rationalize error formatting. In this case
+                    // the filter is run after our base class has done
+                    // error handling/formatting, so we need to re-map
+                    // the error and re-merge it into the output. This could
+                    // probably be cleaned up and centralized.
+                    output = {
+                        Error: error.name || error.message,
+                        Cause: error.stack,
+                    };
+
+                    // This is a hard failure, so `next` cannot be executed.
+                    result = Object.assign(result, { output, next: undefined });
+                    return Promise.reject(result);
+                }
             };
 
-            const rejected = error => {
-                return Promise.reject(error);
-            };
-
-            return super.run(input).then(resolved, rejected);
+            return super.run(input).then(resolved);
         }
 
         filterInput(input) {
@@ -125,15 +140,14 @@ function Filter(Base) {
                      * indicies, etc. This constraint can be relaxed in the
                      * future, if necessary.
                      */
-                    const child = target[value];
-                    if (typeof child !== 'object' || Array.isArray(child)) {
-                        const error = new Error(`Unable to match ResultPath "${ResultPath}".`);
+                    let child = target[value];
+                    if (child !== undefined && (child === null || typeof child !== 'object' || Array.isArray(child))) {
+                        const error = new Error(`Unable to match ResultPath "${resultPath}".`);
                         error.name = 'States.ResultPathMatchFailure';
                         throw error;
                     }
 
-
-                    if (typeof child === undefined) {
+                    if (child === undefined) {
                         child = target[value] = {};
                     }
 

@@ -52,7 +52,7 @@ test('No Task Impl', t => {
 
     const task = new Task(spec);
     return t.throws(task.run(input)).then(({ output, next }) => {
-        t.is(output.Name, 'No task implementation provided to execute resource not_found.');
+        t.is(output.Error, 'No task implementation provided to execute resource not_found.');
         t.is(next, spec.Next);
         process.env['__OW_API_KEY'] = key;
     });

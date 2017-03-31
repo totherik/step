@@ -4,9 +4,15 @@ const FilterMixin = require('./filter');
 
 const Filter = FilterMixin(class Base {
     run(input) {
+
+        if (input.error) {
+            return Promise.reject(new Error(input.error));
+        }
+
         if (input.result) {
             input = input.result;
         }
+
         return Promise.resolve({ output: input })
     }
 });
@@ -159,8 +165,9 @@ test('ResultPath is set to a non-Reference Path', t => {
     };
 
     const filter = new Filter(spec);
-    return t.throws(filter.run(input)).then(error => {
-        t.is(error.name, 'States.ResultPathMatchFailure');
+    return t.throws(filter.run(input)).then(({ output, next }) => {
+        t.is(output.Error, 'States.ResultPathMatchFailure');
+        t.is(next, undefined);
     });
 
 });
@@ -182,7 +189,7 @@ test('ResultPath is set to existing property.', t => {
 
     const filter = new Filter(spec);
     return filter.run(input).then(({ output }) => {
-        t.is(output.foo, input.result);
+        t.deepEqual(output.foo, input.result);
     });
 
 });
@@ -197,13 +204,34 @@ test('ResultPath is set to non-existent property.', t => {
 
     const input = {
         result: {
-            foo: 'bar'
-        }
+            foo: 'bar',
+        },
     };
 
     const filter = new Filter(spec);
     return filter.run(input).then(({ output }) => {
-        t.is(output.foo, input.result);
+        t.deepEqual(output.foo, input.result);
+    });
+
+});
+
+
+test('ResultPath is set to non-existent nested property.', t => {
+
+    const spec = {
+        // Should return new object.
+        ResultPath: '$.foo.bar.baz',
+    };
+
+    const input = {
+        result: {
+            foo: 'bar',
+        },
+    };
+
+    const filter = new Filter(spec);
+    return filter.run(input).then(({ output }) => {
+        t.deepEqual(output.foo.bar.baz, input.result);
     });
 
 });
@@ -218,18 +246,41 @@ test('ResultPath is set to nested property.', t => {
 
     const input = {
         result: {
-            foo: 'bar'
+            foo: 'bar',
         },
         a: {
             b: {
-                c: 'foo'
-            }
-        }
+                c: 'foo',
+            },
+        },
     };
 
     const filter = new Filter(spec);
     return filter.run(input).then(({ output }) => {
-        t.is(output.a.b.c, input.result);
+        t.deepEqual(output.a.b.c, input.result);
+    });
+
+});
+
+
+test('ResultPath is non-traversable property.', t => {
+
+    const spec = {
+        // Should return new object.
+        ResultPath: '$.a.length',
+    };
+
+    const input = {
+        result: {
+            foo: 'bar'
+        },
+        a: []
+    };
+
+    const filter = new Filter(spec);
+    return t.throws(filter.run(input)).then(({ output, next }) => {
+        t.is(output.Error, 'States.ResultPathMatchFailure');
+        t.is(next, undefined);
     });
 
 });

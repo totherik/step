@@ -20,6 +20,11 @@ function State(Base) {
             };
 
             const unwrap = error => {
+                // TODO: Rationalize error formatting. This does not
+                // handle all cases, specifically cases in which errors
+                // may be generated after or in lieu of this invocation.
+                // @see ./filter.js
+                // @see ./timeout.js
                 if (error instanceof Error) {
                     error = {
                         Error: error.message,

@@ -29,6 +29,8 @@ function Filter(Base) {
                     // error handling/formatting, so we need to re-map
                     // the error and re-merge it into the output. This could
                     // probably be cleaned up and centralized.
+                    // @see ./timeout.js
+                    // @see ./state.js
                     output = {
                         Error: error.name || error.message,
                         Cause: error.stack,

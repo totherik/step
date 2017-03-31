@@ -108,3 +108,110 @@ test('Graph', t => {
     });
 
 });
+
+
+test('Uncaught Error handling', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Task',
+                Resource: 'not_found',
+                End: true,
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    return t.throws(machine.run({})).then(({ output, next }) => {
+        const { Error, Cause } = output;
+        t.is(typeof Error, 'string');
+        t.is(typeof Cause, 'string');
+        t.truthy(Error.length);
+        t.truthy(Cause.length);
+        t.is(next, undefined);
+    });
+
+});
+
+
+test('Fail Error handling', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Fail',
+                Error: 'States.NotOk',
+                Cause: 'not ok.',
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    return t.throws(machine.run({})).then(({ output, next }) => {
+        const { Error, Cause } = output;
+        t.is(Error, json.States.One.Error);
+        t.is(Cause, json.States.One.Cause);
+        t.is(next, undefined);
+    });
+
+});
+
+
+test('Post execution error handling', t => {
+    // Adding this integration test for a specific error handling use-case
+    // involving ResultPath (since ResultPaths are evaluated after a give state
+    // is run)
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Pass',
+                Result: 10,
+                ResultPath: '$.foo.length',
+                End: true,
+            },
+        },
+    };
+
+    const input = {
+        foo: 'foo',
+    };
+
+    const machine = Machine.create(json);
+    return t.throws(machine.run(input)).then(({ output, next }) => {
+        const { Error, Cause } = output;
+        t.is(Error, 'States.ResultPathMatchFailure');
+        t.is(typeof Cause, 'string');
+        t.truthy(Cause.length);
+        t.is(next, undefined);
+    });
+
+});
+
+test('Timeout Error handling', t => {
+
+    const json = {
+        StartAt: 'One',
+        States: {
+            One: {
+                Type: 'Task',
+                Resource: '__mockresource__',
+                TimeoutSeconds: 1,
+                End: true,
+            },
+        },
+    };
+
+    const machine = Machine.create(json);
+    return t.throws(machine.run({ SleepSeconds: [ 2 ] })).then(({ output, next }) => {
+        const { Error, Cause } = output;
+        t.is(Error, 'States.Timeout');
+        t.is(Cause, 'State \'One\' exceeded the configured timeout of 1 seconds.');
+        t.is(next, undefined);
+    });
+
+});

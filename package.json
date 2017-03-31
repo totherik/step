@@ -7,7 +7,7 @@
     "src": "src"
   },
   "scripts": {
-    "test": "nyc --reporter=html ava"
+    "test": "nyc ava"
   },
   "repository": {
     "type": "git",

@@ -17,7 +17,7 @@ const Timeout = TimeoutMixin(class Base {
 });
 
 
-test('Timeout', t => {
+test('Completes', t => {
 
     const spec = {
         TimeoutSeconds: 1,
@@ -36,7 +36,7 @@ test('Timeout', t => {
 });
 
 
-test('Timeout not triggered', t => {
+test('Timeout triggered', t => {
 
     const spec = {
         TimeoutSeconds: 1,
@@ -47,8 +47,13 @@ test('Timeout not triggered', t => {
     };
 
     const timeout = new Timeout(spec)
-    return t.throws(timeout.run(input)).then(({ Error }) => {
+    return t.throws(timeout.run(input)).then(({ output, next }) => {
+        // In this case we get a normalized error as this is triggered in
+        // lieu of any work done by State to format errors.
+        const { Error, Cause } = output;
         t.is(Error, 'States.Timeout');
+        t.is(Cause, 'State \'undefined\' exceeded the configured timeout of 1 seconds.');
+        t.is(next, undefined);
     });
 
 });
@@ -66,7 +71,9 @@ test('Error', t => {
 
     const timeout = new Timeout(spec);
     return t.throws(timeout.run(input)).then((output) => {
-        t.true(output instanceof Error);
+        // In this case we get an error because we haven't mixed in State
+        // to do any normalization of errors returned by `run`.
+        t.true(output instanceof Error)
     });
 
 });

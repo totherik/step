@@ -22,38 +22,35 @@ class Machine extends EventEmitter {
     build(name) {
         const { graph, states } = this;
 
-        const state = states[name];
-        state.Name = name;
-        graph.addVertex(state);
+        const fromState = clone(states[name]);
+        fromState.Name = name;
+        graph.addVertex(fromState);
 
-        if (state.Next) {
-            const next = this.build(state.Next);
-            graph.addEdge(state, next, state.Next);
+        const addEdge = Next => {
+            const toState = this.build(Next);
+            graph.addEdge(fromState, toState, Next);
+        };
+
+        if (fromState.Next) {
+            addEdge(fromState.Next);
         }
 
-        if (Array.isArray(state.Catch)) {
-            state.Catch.forEach(({ Next }, index) => {
-                const next = this.build(Next);
-                graph.addEdge(state, next, Next);
-            });
+        if (fromState.Default) {
+            addEdge(fromState.Default);
         }
 
-        if (Array.isArray(state.Choices)) {
-            state.Choices.forEach(({ Next }, index) => {
-                const next = this.build(Next);
-                graph.addEdge(state, next, Next);
-            });
+        if (Array.isArray(fromState.Catch)) {
+            fromState.Catch.forEach(({ Next }) => addEdge(Next));
         }
 
-        if (state.Default) {
-            const next = this.build(state.Default);
-            graph.addEdge(state, next, state.Default);
+        if (Array.isArray(fromState.Choices)) {
+            fromState.Choices.forEach(({ Next }) => addEdge(Next));
         }
 
         // Branches are handled internally to the Parallel State
         // because they don't define state transitions.
 
-        return state;
+        return fromState;
     }
 
     run(input) {
@@ -72,7 +69,9 @@ class Machine extends EventEmitter {
             return output;
         };
 
-        return run(graph, startAt, input).then(resolve);
+        const reject = output => Promise.reject(resolve(output));
+
+        return run(graph, startAt, input).then(resolve, reject);
     }
 
     _runner() {
@@ -88,6 +87,8 @@ class Machine extends EventEmitter {
                     input: result,
                 });
 
+                // Only build states that are executed in this particular
+                // invocation of the machine.
                 const state = Factory.create(currentState, Machine);
                 const { output, next } = yield state.run(result);
 

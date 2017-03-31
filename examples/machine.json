@@ -18,6 +18,7 @@
     "Seven": {
       "Type": "Task",
       "Resource": "step_test_action",
+      "OutputPath": "$.response.result",
       "TimeoutSeconds": 1,
       "Retry": [
         {

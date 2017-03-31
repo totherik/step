@@ -22,7 +22,6 @@ class Task extends mixin(Timeout, Retry, Filter) {
                 name: resource,
                 params: input,
                 blocking: true,
-                result: true,
             };
 
             const { actions } = openwhisk({ ignore_certs: true /* for testing */ });

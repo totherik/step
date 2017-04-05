@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "directories": {
     "src": "src",
-    "examples": "examples",
+    "examples": "examples"
   },
   "scripts": {
     "test": "ava",

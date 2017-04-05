@@ -26,11 +26,8 @@ function Timeout(Base) {
                 // @see ./filter.js
                 // @see ./state.js
                 const result = {
-                    output: {
-                        Error: 'States.Timeout',
-                        Cause: `State '${this.name}' exceeded the configured timeout of ${timeoutSeconds} seconds.`
-                    },
-                    next: undefined
+                    Error: 'States.Timeout',
+                    Cause: `State '${this.name}' exceeded the configured timeout of ${timeoutSeconds} seconds.`
                 };
 
                 // Once a promise is settled, additional calls to resolve/reject are a noop.

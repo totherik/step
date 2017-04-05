@@ -1,9 +1,9 @@
 const mock = require('./__mocktask__');
 const openwhisk = require('openwhisk');
-const  { mixin, Timeout, Retry, Filter } = require('./mixins');
+const  { mixin, Timeout, Retry, Catch, Filter } = require('./mixins');
 
 
-class Task extends mixin(Timeout, Retry, Filter) {
+class Task extends mixin(Timeout, Filter, Retry, Catch) {
 
     constructor(spec) {
         super(spec);
@@ -24,8 +24,17 @@ class Task extends mixin(Timeout, Retry, Filter) {
                 blocking: true,
             };
 
+            const resolve = output => ({ output });
+            const reject = ({ error }) => {
+                const output = {
+                    Error: 'States.TaskFailed',
+                    Cause: JSON.stringify(error),
+                };
+                return Promise.reject(output);
+            };
+
             const { actions } = openwhisk({ ignore_certs: true /* for testing */ });
-            return actions.invoke(options).then(output => ({ output }));
+            return actions.invoke(options).then(resolve, reject);
         }
 
         return Promise.reject(new Error(`No task implementation provided to execute resource ${resource}.`));

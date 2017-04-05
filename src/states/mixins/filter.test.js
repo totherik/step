@@ -165,9 +165,8 @@ test('ResultPath is set to a non-Reference Path', t => {
     };
 
     const filter = new Filter(spec);
-    return t.throws(filter.run(input)).then(({ output, next }) => {
-        t.is(output.Error, 'States.ResultPathMatchFailure');
-        t.is(next, undefined);
+    return t.throws(filter.run(input)).then(error => {
+        t.is(error.message, 'States.ResultPathMatchFailure');
     });
 
 });
@@ -278,9 +277,8 @@ test('ResultPath is non-traversable property.', t => {
     };
 
     const filter = new Filter(spec);
-    return t.throws(filter.run(input)).then(({ output, next }) => {
-        t.is(output.Error, 'States.ResultPathMatchFailure');
-        t.is(next, undefined);
+    return t.throws(filter.run(input)).then(error => {
+        t.is(error.message, 'States.ResultPathMatchFailure');
     });
 
 });

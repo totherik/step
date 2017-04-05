@@ -12,7 +12,6 @@
       "Result": {
         "abc": 123
       },
-      "ResultPath": "$",
       "Next": "Seven"
     },
     "Seven": {
@@ -29,6 +28,12 @@
         }
       ],
       "Catch": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "Next": "Four"
+        },
         {
           "ErrorEquals": [
             "States.Timeout"

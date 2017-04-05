@@ -124,13 +124,12 @@ test('Uncaught Error handling', t => {
     };
 
     const machine = Machine.create(json);
-    return t.throws(machine.run({})).then(({ output, next }) => {
-        const { Error, Cause } = output;
+    return t.throws(machine.run({})).then(error => {
+        const { Error, Cause } = error;
         t.is(typeof Error, 'string');
         t.is(typeof Cause, 'string');
         t.truthy(Error.length);
         t.truthy(Cause.length);
-        t.is(next, undefined);
     });
 
 });
@@ -150,11 +149,10 @@ test('Fail Error handling', t => {
     };
 
     const machine = Machine.create(json);
-    return t.throws(machine.run({})).then(({ output, next }) => {
-        const { Error, Cause } = output;
+    return t.throws(machine.run({})).then(error => {
+        const { Error, Cause } = error;
         t.is(Error, json.States.One.Error);
         t.is(Cause, json.States.One.Cause);
-        t.is(next, undefined);
     });
 
 });
@@ -182,12 +180,11 @@ test('Post execution error handling', t => {
     };
 
     const machine = Machine.create(json);
-    return t.throws(machine.run(input)).then(({ output, next }) => {
-        const { Error, Cause } = output;
+    return t.throws(machine.run(input)).then(error => {
+        const { Error, Cause } = error;
         t.is(Error, 'States.ResultPathMatchFailure');
         t.is(typeof Cause, 'string');
         t.truthy(Cause.length);
-        t.is(next, undefined);
     });
 
 });
@@ -207,11 +204,10 @@ test('Timeout Error handling', t => {
     };
 
     const machine = Machine.create(json);
-    return t.throws(machine.run({ SleepSeconds: [ 2 ] })).then(({ output, next }) => {
-        const { Error, Cause } = output;
+    return t.throws(machine.run({ SleepSeconds: [ 2 ] })).then(error => {
+        const { Error, Cause } = error;
         t.is(Error, 'States.Timeout');
         t.is(Cause, 'State \'One\' exceeded the configured timeout of 1 seconds.');
-        t.is(next, undefined);
     });
 
 });

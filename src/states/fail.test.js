@@ -8,9 +8,8 @@ test('succeed', t => {
     const input = { Error: 'original error', Cause: 'original cause' };
 
     const fail = new Fail(spec);
-    return t.throws(fail.run(input)).then(({ output, next }) => {
-        t.deepEqual(output, spec);
-        t.is(next, undefined);
+    return t.throws(fail.run(input)).then(error => {
+        t.deepEqual(error, input);
     });
 
 });

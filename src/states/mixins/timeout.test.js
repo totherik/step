@@ -47,13 +47,12 @@ test('Timeout triggered', t => {
     };
 
     const timeout = new Timeout(spec)
-    return t.throws(timeout.run(input)).then(({ output, next }) => {
+    return t.throws(timeout.run(input)).then(error => {
         // In this case we get a normalized error as this is triggered in
         // lieu of any work done by State to format errors.
-        const { Error, Cause } = output;
+        const { Error, Cause } = error;
         t.is(Error, 'States.Timeout');
         t.is(Cause, 'State \'undefined\' exceeded the configured timeout of 1 seconds.');
-        t.is(next, undefined);
     });
 
 });
@@ -70,10 +69,10 @@ test('Error', t => {
     };
 
     const timeout = new Timeout(spec);
-    return t.throws(timeout.run(input)).then((output) => {
+    return t.throws(timeout.run(input)).then(error => {
         // In this case we get an error because we haven't mixed in State
         // to do any normalization of errors returned by `run`.
-        t.true(output instanceof Error)
+        t.true(error instanceof Error)
     });
 
 });

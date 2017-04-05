@@ -24,6 +24,7 @@ test('OpenWhisk Task', t => {
 
     const spec = {
         Resource: 'step_test_action',
+        ResultPath: '$.response.result',
         Next: 'next',
     };
 
@@ -51,9 +52,8 @@ test('No Task Impl', t => {
     const input = { foo: 'bar' };
 
     const task = new Task(spec);
-    return t.throws(task.run(input)).then(({ output, next }) => {
-        t.is(output.Error, 'No task implementation provided to execute resource not_found.');
-        t.is(next, spec.Next);
+    return t.throws(task.run(input)).then(error => {
+        t.is(error.message, 'No task implementation provided to execute resource not_found.');
         process.env['__OW_API_KEY'] = key;
     });
 

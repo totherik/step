@@ -87,19 +87,40 @@ class Machine extends EventEmitter {
                     input: result,
                 });
 
-                // Only build states that are executed in this particular
-                // invocation of the machine.
-                const state = Factory.create(currentState, Machine);
-                const { output, next } = yield state.run(result);
 
-                const nextState = graph.getVertexAt(currentState, next);
-                currentState = nextState;
-                result = clone(output);
+                let output, next;
+                try {
 
-                this.emit('StateExited', {
-                    name,
-                    output,
-                });
+                    // Only build states that are executed in this
+                    // particular invocation of the machine.
+                    const state = Factory.create(currentState, Machine);
+                    ({ output, next } = yield state.run(result));
+
+                    const nextState = graph.getVertexAt(currentState, next);
+                    currentState = nextState;
+                    result = clone(output);
+
+                } catch (error) {
+
+                    if (error instanceof Error) {
+                        error = {
+                            Error: error.message,
+                            Cause: error.stack,
+                        };
+                    }
+
+                    output = error;
+                    next = undefined;
+                    throw error;
+
+                } finally {
+
+                    this.emit('StateExited', {
+                        name,
+                        output,
+                    });
+
+                }
             }
 
             return result;

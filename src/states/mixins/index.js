@@ -1,5 +1,6 @@
 const State = require('./state');
 const Retry = require('./retry');
+const Catch = require('./catch');
 const Filter = require('./filter');
 const Timeout = require('./timeout');
 
@@ -13,6 +14,7 @@ function mixin(...factories) {
 module.exports = {
     mixin,
     Retry,
+    Catch,
     Filter,
     Timeout,
 };

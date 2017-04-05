@@ -15,4 +15,4 @@ machine.on('ExecutionStarted', log('ExecutionStarted'));
 machine.on('ExecutionCompleted', log('ExecutionCompleted'));
 machine.on('StateEntered', log('StateEntered'));
 machine.on('StateExited', log('StateExited'));
-machine.run({});
+machine.run({}).then(console.log, console.error);

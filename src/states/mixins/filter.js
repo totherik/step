@@ -17,29 +17,9 @@ function Filter(Base) {
 
             const resolved = (result) => {
                 let output;
-                try {
-
-                    output = this.filterResult(input, result.output);
-                    output = this.filterOutput(output);
-                    return Object.assign(result, { output });
-
-                } catch (error) {
-                    // TODO: Rationalize error formatting. In this case
-                    // the filter is run after our base class has done
-                    // error handling/formatting, so we need to re-map
-                    // the error and re-merge it into the output. This could
-                    // probably be cleaned up and centralized.
-                    // @see ./timeout.js
-                    // @see ./state.js
-                    output = {
-                        Error: error.name || error.message,
-                        Cause: error.stack,
-                    };
-
-                    // This is a hard failure, so `next` cannot be executed.
-                    result = Object.assign(result, { output, next: undefined });
-                    return Promise.reject(result);
-                }
+                output = this.filterResult(input, result.output);
+                output = this.filterOutput(output);
+                return Object.assign(result, { output });
             };
 
             return super.run(input).then(resolved);
@@ -144,8 +124,9 @@ function Filter(Base) {
                      */
                     let child = target[value];
                     if (child !== undefined && (child === null || typeof child !== 'object' || Array.isArray(child))) {
-                        const error = new Error(`Unable to match ResultPath "${resultPath}".`);
-                        error.name = 'States.ResultPathMatchFailure';
+                        // const error = new Error(`Unable to match ResultPath "${resultPath}".`);
+                        // error.name = 'States.ResultPathMatchFailure';
+                        const error = new Error('States.ResultPathMatchFailure');
                         throw error;
                     }
 
@@ -156,8 +137,9 @@ function Filter(Base) {
                     return target = child;
                 }
 
-                const error = new Error(`Invalid ResultPath "${resultPath}". ResultPath must be a Reference Path (https://states-language.net/spec.html#path).`);
-                error.name = 'States.ResultPathMatchFailure';
+                // const error = new Error(`Invalid ResultPath "${resultPath}". ResultPath must be a Reference Path (https://states-language.net/spec.html#path).`);
+                // error.name = 'States.ResultPathMatchFailure';
+                const error = new Error('States.ResultPathMatchFailure');
                 throw error;
 
             }, input);

@@ -10,8 +10,11 @@ class Fail extends mixin(/* State */) {
     }
 
     _run(input) {
+        // TODO: Do we always use the configured Error and Cause, or pass
+        // through error source details?
         const { error, cause } = this;
-        return Promise.reject({ Error: error, Cause: cause });
+        const result = Object.assign({ Error: error, Cause: cause }, input);
+        return Promise.reject(result);
     }
 
 }

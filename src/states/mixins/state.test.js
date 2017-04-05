@@ -10,10 +10,9 @@ test('Unimplemented', t => {
     const input = {};
 
     const state = new State(spec);
-    return t.throws(state.run(input)).then(({ output, next }) => {
-        t.is(typeof output, 'object');
-        t.is(output.Error, 'Not implemented.');
-        t.is(next, undefined);
+    return t.throws(state.run(input)).then(error => {
+        t.is(typeof error, 'object');
+        t.is(error.Error, 'Not implemented.');
     });
 
 });

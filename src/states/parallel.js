@@ -1,7 +1,7 @@
-const  { mixin, Retry, Filter } = require('./mixins');
+const  { mixin, Retry, Catch, Filter } = require('./mixins');
 
 
-class Parallel extends mixin(Retry, Filter) {
+class Parallel extends mixin(Filter, Retry, Catch) {
 
     constructor(spec, Machine) {
         super(spec);

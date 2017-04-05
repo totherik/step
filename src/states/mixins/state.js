@@ -14,28 +14,8 @@ function State(Base) {
 
         run(data) {
             const defaults = { next: this.next };
-
-            const merge = result => {
-                return Object.assign(defaults, result);
-            };
-
-            const unwrap = error => {
-                // TODO: Rationalize error formatting. This does not
-                // handle all cases, specifically cases in which errors
-                // may be generated after or in lieu of this invocation.
-                // @see ./filter.js
-                // @see ./timeout.js
-                if (error instanceof Error) {
-                    error = {
-                        Error: error.message,
-                        Cause: error.stack,
-                    };
-                }
-                const result = merge({ output: error });
-                return Promise.reject(result);
-            };
-
-            return this._run(data).then(merge, unwrap);
+            const merge = result => Object.assign(defaults, result);
+            return this._run(data).then(merge);
         }
 
         _run(input) {

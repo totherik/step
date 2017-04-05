@@ -63,14 +63,3 @@ $ npm test
 compatibility. The associated stability that comes with selecting one runtime
 is preferred for now (in the early stages of development) over flexbility
 across providers.
-- There are many things in this codebase that could be written much more tersely.
-The goal is to keep expressiveness and readability until other factors, such as
-performance, dictate otherwise.
-- Be aware that some `Type`s compose `States` as well. For example, `Parallel`
-and `Choice` run state machines internal to their type.
-- Even though Classes are used, this codebase favors exposing Factories over
-Constructors both internally and externally.
-- This version generates the entire machine prior to execution. Since a FaaS
-deployment is generally compute on-demand, rather than building the whole thing
-on each initialization, an optimization might be to JIT create and execute each
-state in the tree in response to each runtime state transition.
